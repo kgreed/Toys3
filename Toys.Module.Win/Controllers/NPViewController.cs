@@ -101,8 +101,8 @@ namespace Toys.Module.Controllers
                 else
                 {
                     ((NonPersistentObjectSpace)objectSpace).GetObject(obj);
-                    //((IXafEntityObject)obj).OnSaving();
-                   // ((INonPersistent)obj).NPOnSaving(persistentOS);
+                    ((IXafEntityObject)obj).OnSaving();
+                    ((INonPersistent)obj).NPOnSaving(persistentOS);
                 }
             }
             persistentOS.CommitChanges();
@@ -124,6 +124,7 @@ namespace Toys.Module.Controllers
             nonPersistentObjectSpace.ObjectsGetting += NonPersistentObjectSpace_ObjectsGetting;
             nonPersistentObjectSpace.ObjectByKeyGetting += NonPersistentObjectSpace_ObjectByKeyGetting;
             nonPersistentObjectSpace.ObjectGetting += NonPersistentObjectSpace_ObjectGetting;
+            //nonPersistentObjectSpace.CustomCommitChanges += NonPersistentObjectSpace_CustomCommitChanges;
             nonPersistentObjectSpace.Committing += NonPersistentObjectSpace_Committing;
             var persistentOS = this.Application.CreateObjectSpace(typeof(Toy));
             nonPersistentObjectSpace.AdditionalObjectSpaces.Add(persistentOS);
@@ -134,6 +135,30 @@ namespace Toys.Module.Controllers
            
             ObjectSpace.Refresh();
         }
+
+        //private void NonPersistentObjectSpace_CustomCommitChanges(object sender, HandledEventArgs e)
+        //{
+        //    var toSave = ObjectSpace.GetObjectsToSave(false);
+        //    var toInsert = new List<object>();
+        //    var toUpdate = new List<object>();
+        //    foreach (var obj in toSave)
+        //    {
+        //        if (ObjectSpace.IsNewObject(obj))
+        //        {
+        //            toInsert.Add(obj);
+        //        }
+        //        else
+        //        {
+        //            toUpdate.Add(obj);
+        //        }
+        //    }
+        //    var toDelete = ObjectSpace.GetObjectsToDelete(false);
+        //    if (toInsert.Count != 0 || toUpdate.Count != 0 || toDelete.Count != 0)
+        //    {
+        //      // factory.SaveObjects(toInsert, toUpdate, toDelete);
+        //    }
+        //}
+
         protected override void OnDeactivated()
         {
             if (ObjectSpace is NonPersistentObjectSpace nonPersistentObjectSpace)
