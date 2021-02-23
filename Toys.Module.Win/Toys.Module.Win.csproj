@@ -367,6 +367,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\NPViewController.cs" />
+    <Compile Include="Controllers\ViewControllerToggleRHS.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\ViewControllerToggleRHS.Designer.cs">
+      <DependentUpon>ViewControllerToggleRHS.cs</DependentUpon>
+    </Compile>
     <Compile Include="Editors\BabyControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -400,6 +406,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Controllers\NPViewController.resx">
       <DependentUpon>NPViewController.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controllers\ViewControllerToggleRHS.resx">
+      <DependentUpon>ViewControllerToggleRHS.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Editors\BabyControl.resx">
       <DependentUpon>BabyControl.cs</DependentUpon>

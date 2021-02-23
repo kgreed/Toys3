@@ -16,6 +16,7 @@ using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 using DevExpress.XtraScheduler.Outlook.Interop;
 using Toys.Module.DTO;
+using Toys.Module.Win.Controllers;
 using Exception = System.Exception;
 
 
@@ -24,7 +25,7 @@ namespace Toys.Module.BusinessObjects
     [DomainComponent]
     [DefaultClassOptions]
     [NavigationItem("1 Main")]
-    public class NPToy : INonPersistent, IObjectSpaceLink, INotifyPropertyChanged, IXafEntityObject
+    public class NPToy : INonPersistent, IObjectSpaceLink, INotifyPropertyChanged, IXafEntityObject, IToggleRHS
     {
         public NPToy() {
             

@@ -258,6 +258,7 @@
     <Compile Include="BusinessObjects\Brand.cs" />
     <Compile Include="BusinessObjects\BabyToy.cs" />
     <Compile Include="BusinessObjects\INonPersistent.cs" />
+    <Compile Include="BusinessObjects\IToggleRHS.cs" />
     <Compile Include="BusinessObjects\MyInitializer.cs" />
     <Compile Include="BusinessObjects\NPToy.cs" />
     <Compile Include="BusinessObjects\PreSchoolToy.cs" />
