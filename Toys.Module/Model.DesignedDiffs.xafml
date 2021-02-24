@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application Title="Toys">
+  <BOModel>
+    <Class Name="Toys.Module.BusinessObjects.NPToy" DefaultListViewMasterDetailMode="ListViewAndDetailView" />
+  </BOModel>
   <SchemaModules>
-    <SchemaModule Name="SystemModule" Version="19.1.4.0" IsNewNode="True" />
+    <SchemaModule Name="SystemModule" Version="20.2.5.0" IsNewNode="True" />
   </SchemaModules>
   <Views>
     <ListView Id="NPToy_ListView" MasterDetailMode="ListViewAndDetailView" />

@@ -62,6 +62,8 @@ namespace Toys.Module.Controllers
             var npObj = (INonPersistent)Activator.CreateInstance(View.ObjectTypeInfo.Type);
             npObj.SearchText = SearchText;
             objectsCache = npObj.GetData(objectSpace);
+
+            
         }
 
         private void NonPersistentObjectSpace_ObjectGetting(object sender, ObjectGettingEventArgs e)
@@ -132,8 +134,15 @@ namespace Toys.Module.Controllers
             ObjectSpace.ObjectChanged += ObjectSpace_ObjectChanged;
             View.CreateCustomCurrentObjectDetailView += NonPersistentController_CreateCustomCurrentObjectDetailView;
 
+            View.ProcessSelectedItem += View_ProcessSelectedItem;
            
+
             ObjectSpace.Refresh();
+        }
+
+        private void View_ProcessSelectedItem(object sender, EventArgs e)
+        {
+            Debug.Print("hi");
         }
 
         //private void NonPersistentObjectSpace_CustomCommitChanges(object sender, HandledEventArgs e)
@@ -169,6 +178,7 @@ namespace Toys.Module.Controllers
                 nonPersistentObjectSpace.Committing -= NonPersistentObjectSpace_Committing;
                 ObjectSpace.CustomRefresh -= ObjectSpace_CustomRefresh;
                 View.CreateCustomCurrentObjectDetailView -= NonPersistentController_CreateCustomCurrentObjectDetailView;
+                View.ProcessSelectedItem -= View_ProcessSelectedItem;
                 var persistentOS = nonPersistentObjectSpace.AdditionalObjectSpaces.FirstOrDefault();
                 if (persistentOS != null)
                 {
@@ -179,17 +189,31 @@ namespace Toys.Module.Controllers
             ObjectSpace.ObjectChanged -= ObjectSpace_ObjectChanged;
             base.OnDeactivated();
         }
+
+        private void NonPersistentController_ProcessSelectedItem(object sender, EventArgs e)
+        {
+             Debug.Print("hi");
+        }
+
         private void NonPersistentController_CreateCustomCurrentObjectDetailView(object sender, CreateCustomCurrentObjectDetailViewEventArgs e)
         {
+            try
+            {
+                UpdateCacheFromObjectSpace();
 
-            UpdateCacheFromObjectSpace();
+
+                //var obj = View.CurrentObject as IXafEntityObject;
+                //var objAsnp = obj as INonPersistent;
+                //Trace.WriteLine($"objAsNp id:{objAsnp?.Id} index {objAsnp?.CacheIndex}");
+                //obj?.OnLoaded();
+                //Trace.WriteLine("");
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
         
-
-            var obj = View.CurrentObject as IXafEntityObject;
-            var objAsnp = obj as INonPersistent;
-            Trace.WriteLine($"objAsNp id:{objAsnp?.Id} index {objAsnp?.CacheIndex}");
-            obj?.OnLoaded();
-            Trace.WriteLine("");
 
 
 

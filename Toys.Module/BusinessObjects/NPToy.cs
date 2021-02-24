@@ -150,6 +150,7 @@ namespace Toys.Module.BusinessObjects
                 foreach (INonPersistent np in npresults)
                 {
                     np.CacheIndex = index;
+                    ((IObjectSpaceLink) np).ObjectSpace = os;
                     index++;
                 }
                 return npresults;
