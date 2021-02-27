@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using DevExpress.Data.Filtering;
 using DevExpress.Utils.Behaviors.Common;
 using Toys.Module.BusinessObjects;
@@ -45,6 +46,7 @@ namespace Toys.Module
         }
         private T WrapLoading<T>(Func<T> doer)
         {
+            Debug.Print("hi");
             if (isLoading)
             {
                 throw new InvalidOperationException();

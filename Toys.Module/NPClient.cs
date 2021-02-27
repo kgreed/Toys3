@@ -21,21 +21,32 @@ namespace Toys.Module
         {
             this.DataStore = new InMemoryDataStore(AutoCreateOption.DatabaseAndSchema, false);
             this.Mappings = new Dictionary<Type, DataStoreMapping>();
-            var mToy = new DataStoreMapping { Table = new DBTable("NPToys") };
-            mToy.Table.AddColumn(new DBColumn("Id", true, null, 32, DBColumnType.Int32));
+            var mToy = new DataStoreMapping { Table = new DBTable("NPToy") };
+
+            var mToyKey = new DBColumn("Id", true, null, 0, DBColumnType.Int32) {IsIdentity = true};
+
+            // mToy.Table.AddColumn(new DBColumn("Id", true, null, 1024, DBColumnType.String));
+            mToy.Table.AddColumn(mToyKey);
             mToy.Table.AddColumn(new DBColumn("Name", false, null, 1024, DBColumnType.String));
-            mToy.Create = () => new Toy();
-            mToy.Load = (obj, values, omap) => {
-                ((NPToy)obj).SetKey((string)values[0]);
-                ((NPToy)obj).Name = (string)values[1];
-            };
-            mToy.Save = (obj, values) => {
-                values[0] = ((NPToy)obj).Id;
-                values[1] = ((NPToy)obj).Name;
+            mToy.Table.PrimaryKey = new DBPrimaryKey(new object[] { mToyKey });
+            mToy.Create = () => new NPToy();
+            mToy.SetKey = (obj, key) => {
+                ((NPToy)obj).SetKey((int)key);
             };
             mToy.GetKey = (obj) => ((NPToy)obj).Id;
+            mToy.Load = (obj, values, omap) => {
+                var o = (NPToy)obj;
+                o.SetKey((int)values[0]);
+                o.ToyName= (string)values[1];
+                 
+            };
+            mToy.Save = (obj, values) => {
+                values[0] = ((NPToy)obj).Id ;
+                values[1] = ((NPToy)obj).ToyName;
+            };
+           
             mToy.RefColumns = Enumerable.Empty<DataStoreMapping.Column>();
-            Mappings.Add(typeof(Toy), mToy);
+            Mappings.Add(typeof(NPToy), mToy);
             DataStore.UpdateSchema(false, mToy.Table);
             CreateDemoData((InMemoryDataStore)DataStore);
         }
@@ -55,21 +66,16 @@ namespace Toys.Module
                 ds.ReadXml(ms);
             }
             var gen = new GenHelper();
-            var idsAccount = new List<string>();
-            var dtToys = ds.Tables["NPToys"];
-            //for (int i = 0; i < 200; i++)
-            //{
-            //    var id = gen.MakeTosh(20);
-            //    idsAccount.Add(id);
-            //    dtAccounts.Rows.Add(id, gen.GetFullName());
-            //}
+           
+            var dtToys = ds.Tables["NPToy"];
+             
             var o = new NPToy();
-            var data =o.GetData(null).Cast<NPToy>();
+            var data = o.GetData(null);
              
             foreach (var rec in data)
             {
-                
-                dtToys.Rows.Add(rec.Id,rec.Name);
+                var toy = rec as NPToy;
+                dtToys.Rows.Add(toy.Id,toy.ToyName);
             }
             ds.AcceptChanges();
             using (var ms = new System.IO.MemoryStream())

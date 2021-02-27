@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Configuration;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using DevExpress.Data.Filtering;
@@ -31,16 +32,16 @@ namespace Toys.Module.BusinessObjects
             
         }
 
-        [DevExpress.ExpressApp.Data.Key]
-        [ModelDefault("AllowEdit", "False")]
-        public int Id { get; set; }
+        //[DevExpress.ExpressApp.Data.Key]
+        //[ModelDefault("AllowEdit", "False")]
+        //public int Id { get; set; }
 
         [Browsable(false)]
         public int CacheIndex { get; set; }
 
         private string _name;
         [ImmediatePostData]
-        public string Name
+        public string ToyName
         {
             get => _name;
             set
@@ -131,13 +132,15 @@ namespace Toys.Module.BusinessObjects
 
         [Browsable(false)]
         public string SearchText { get; set; }
-        public List<INonPersistent> GetData(IObjectSpace os)
+      
+
+        public List<NonPersistentObjectBase> GetData(IObjectSpace os)
         {
             var connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             using (var connect = new ToysDbContext(connectionString))
             {
                 var parameters = new List<SqlParameter>();
-                var sql = "select t.Id, t.Name, b.Id as BrandId, t.ToyCategory, b.Name as BrandName from toys t inner join brands b on t.Brand_Id = b.Id";
+                var sql = "select t.Id, t.Name as ToyName, b.Id as BrandId, t.ToyCategory, b.Name as BrandName from toys t inner join brands b on t.Brand_Id = b.Id";
             
                 if (SearchText?.Length > 0)
                 {
@@ -145,14 +148,14 @@ namespace Toys.Module.BusinessObjects
                     parameters.Add( new SqlParameter("@name",$"%{SearchText}%"));
                 }
                 var results = connect.Database.SqlQuery<NPToy>(sql,parameters.ToArray()).ToList();
-                var npresults = results.ConvertAll(x => (INonPersistent)x);
-                var index = 0;
-                foreach (INonPersistent np in npresults)
-                {
-                    np.CacheIndex = index;
-                    ((IObjectSpaceLink) np).ObjectSpace = os;
-                    index++;
-                }
+                var npresults = results.ConvertAll(x => (NonPersistentObjectBase)x);
+                //var index = 0;
+                //foreach (NonPersistentObjectBase np in npresults)
+                //{
+                //    np.CacheIndex = index;
+                //    //((IObjectSpaceLink) np).ObjectSpace = os;
+                //    index++;
+                //}
                 return npresults;
             }
         }
@@ -169,15 +172,15 @@ namespace Toys.Module.BusinessObjects
             }
 
             var toy = os.FindObject<Toy>(CriteriaOperator.Parse("[Id] = ?", Id));
-            toy.Name = Name;
+            toy.Name = ToyName;
             toy.Brand = brand;
             toy.ToyCategory = ToyCategory;
             os.SetModified(toy);
         }
 
-        [NotMapped]
-        [Browsable(false)]
-        public IObjectSpace ObjectSpace { get; set; }
+        //[NotMapped]
+        //[Browsable(false)]
+        //public IObjectSpace ObjectSpace { get; set; }
         
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -226,9 +229,17 @@ namespace Toys.Module.BusinessObjects
             return toy;
         }
 
-        public void SetKey(string value)
+        private int id;
+        [Browsable(false)]
+        [DevExpress.ExpressApp.Data.Key]
+        public int Id
         {
-            throw new NotImplementedException();
+            get { return id; }
+            set { id = value; }
+        }
+        public void SetKey(int id)
+        {
+            this.id = id;
         }
     }
 }
