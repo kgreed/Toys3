@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DevExpress.ExpressApp;
+using Toys.Module.BusinessObjects;
 namespace Toys.Module
 {
     public class NonPersistentObjectSpaceHelper : IDisposable
@@ -53,5 +54,7 @@ namespace Toys.Module
                 }
             }
         }
+
+        
     }
 }

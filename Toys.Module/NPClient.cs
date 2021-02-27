@@ -28,6 +28,7 @@ namespace Toys.Module
             // mToy.Table.AddColumn(new DBColumn("Id", true, null, 1024, DBColumnType.String));
             mToy.Table.AddColumn(mToyKey);
             mToy.Table.AddColumn(new DBColumn("Name", false, null, 1024, DBColumnType.String));
+            mToy.Table.AddColumn(new DBColumn("ToyCategory", false, null, 32, DBColumnType.Int32));
             mToy.Table.PrimaryKey = new DBPrimaryKey(new object[] { mToyKey });
             mToy.Create = () => new NPToy();
             mToy.SetKey = (obj, key) => {
@@ -38,11 +39,12 @@ namespace Toys.Module
                 var o = (NPToy)obj;
                 o.SetKey((int)values[0]);
                 o.ToyName= (string)values[1];
-                 
+                o.ToyCategory =(int) values[2];
             };
             mToy.Save = (obj, values) => {
                 values[0] = ((NPToy)obj).Id ;
                 values[1] = ((NPToy)obj).ToyName;
+                values[2] = ((NPToy)obj).ToyCategory;
             };
            
             mToy.RefColumns = Enumerable.Empty<DataStoreMapping.Column>();
@@ -75,7 +77,7 @@ namespace Toys.Module
             foreach (var rec in data)
             {
                 var toy = rec as NPToy;
-                dtToys.Rows.Add(toy.Id,toy.ToyName);
+                dtToys.Rows.Add(toy.Id,toy.ToyName, toy.ToyCategory);
             }
             ds.AcceptChanges();
             using (var ms = new System.IO.MemoryStream())

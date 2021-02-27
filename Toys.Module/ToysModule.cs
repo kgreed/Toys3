@@ -52,6 +52,8 @@ namespace Toys.Module {
                 var map = new ObjectMap(npos, types);
                 new TransientNonPersistentObjectAdapter(npos, map, new NPFactory(map));
             });
+
+             
         }
         private void Application_ViewCreating(object sender, ViewCreatingEventArgs e)
         {

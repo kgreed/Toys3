@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using DevExpress.Data.Filtering;
+using DevExpress.ExpressApp;
 using DevExpress.Utils.Behaviors.Common;
 using Toys.Module.BusinessObjects;
 namespace Toys.Module
@@ -61,10 +62,12 @@ namespace Toys.Module
                 isLoading = false;
             }
         }
-        public override void SaveObjects(ICollection toInsert, ICollection toUpdate, ICollection toDelete)
+        public override void SaveObjects(ICollection toInsert, ICollection toUpdate, ICollection toDelete,
+            NonPersistentObjectSpace kg_npos)
         {
-            var saver = new DataStoreObjectSaver(Storage.Mappings, Storage.DataStore);
-            saver.SaveObjects(toInsert, toUpdate, toDelete);
+          
+             var saver = new DataStoreObjectSaver(Storage.Mappings, Storage.DataStore);
+             saver.SaveObjects(toInsert, toUpdate, toDelete,kg_npos);
         }
     }
 }

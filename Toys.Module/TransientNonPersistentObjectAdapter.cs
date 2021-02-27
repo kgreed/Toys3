@@ -57,7 +57,7 @@ namespace Toys.Module
             var toDelete = objectSpace.GetObjectsToDelete(false);
             if (toInsert.Count != 0 || toUpdate.Count != 0 || toDelete.Count != 0)
             {
-                factory.SaveObjects(toInsert, toUpdate, toDelete);
+                factory.SaveObjects(toInsert, toUpdate, toDelete,objectSpace);
             }
             //e.Handled = false;// !!!
         }

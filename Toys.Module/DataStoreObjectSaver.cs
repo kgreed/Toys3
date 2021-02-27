@@ -3,11 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DevExpress.Data.Filtering;
+using DevExpress.ExpressApp;
 using DevExpress.Xpo.DB;
+using Toys.Module.BusinessObjects;
 namespace Toys.Module
 {
     class DataStoreObjectSaver
     {
+
+
         private IDataStore dataStore;
         private Dictionary<Type, DataStoreMapping> mappings;
         public DataStoreObjectSaver(Dictionary<Type, DataStoreMapping> mappings, IDataStore dataStore)
@@ -15,27 +19,38 @@ namespace Toys.Module
             this.mappings = mappings;
             this.dataStore = dataStore;
         }
-        public void SaveObjects(ICollection toInsert, ICollection toUpdate, ICollection toDelete)
+        public void SaveObjects(ICollection toInsert, ICollection toUpdate, ICollection toDelete, IObjectSpace kg_npos)
         {
-            var statements = new List<ModificationStatement>();
-            var identityAwaiters = new List<Action<object>>();
-            foreach (var obj in toDelete)
-            {
-                DeleteObject(obj, statements);
-            }
-            foreach (var obj in toInsert)
-            {
-                InsertObject(obj, statements, identityAwaiters);
-            }
+            
+            
+
             foreach (var obj in toUpdate)
             {
-                UpdateObject(obj, statements);
+               // UpdateObject(obj, statements);
+
+               var np = obj as NPToy;
+               np.NPOnSaving(kg_npos);
             }
-            var result = dataStore.ModifyData(statements.ToArray());
-            foreach (var identity in result.Identities)
-            {
-                identityAwaiters[identity.Tag - 1].Invoke(identity.Value);
-            }
+
+            //var statements = new List<ModificationStatement>();
+            //var identityAwaiters = new List<Action<object>>();
+            //foreach (var obj in toDelete)
+            //{
+            //    DeleteObject(obj, statements);
+            //}
+            //foreach (var obj in toInsert)
+            //{
+            //    InsertObject(obj, statements, identityAwaiters);
+            //}
+            //foreach (var obj in toUpdate)
+            //{
+            //    UpdateObject(obj, statements);
+            //}
+            //var result = dataStore.ModifyData(statements.ToArray());
+            //foreach (var identity in result.Identities)
+            //{
+            //    identityAwaiters[identity.Tag - 1].Invoke(identity.Value);
+            //}
         }
         private void DeleteObject(object obj, IList<ModificationStatement> statements)
         {

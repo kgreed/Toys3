@@ -44,37 +44,39 @@ namespace Toys.Module.BusinessObjects
         public string ToyName
         {
             get => _name;
-            set { SetPropertyValue(nameof(ToyName), ref _name, value); }
+            set => SetPropertyValue(nameof(ToyName), ref _name, value);
         }
 
         //[Browsable(false)]
-        private int ToyCategory { get; set; }
-        [ImmediatePostData] public ToyCategoryEnum ToyCategoryNum { get =>(ToyCategoryEnum) ToyCategory;
-            set
-            {
-                ToyCategory = (int) value;
-                OnPropertyChanged();
-            }  
+        private int _toyCategory;
+        public ToyCategoryEnum ToyCategoryNum { 
+              get =>(ToyCategoryEnum) _toyCategory;
+              set => SetPropertyValue<int>(nameof(ToyCategoryNum), ref _toyCategory, (int) value  );  
+        }
+        public int ToyCategory
+        {
+            get => (int)_toyCategory;
+            set => SetPropertyValue(nameof(ToyCategory), ref _toyCategory, value);
         }
 
-       
-        private int _BrandId;
-        [Browsable(false)]
-        [ModelDefault("AllowEdit", "False")]
-        public int BrandId {
-            get => _BrandId;
-            set
-            {
-                _BrandId = value;
-                OnPropertyChanged();
-            }
-        }
+        //private int _BrandId;
+        //[Browsable(false)]
+        //[ModelDefault("AllowEdit", "False")]
+        //public int BrandId {
+        //    get => _BrandId;
+        //    set
+        //    {
+        //        _BrandId = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         private BabyToy _babyToy;
-        [Appearance("IsBabyToy", Visibility = ViewItemVisibility.Hide, Criteria =  "[ToyCategoryNum] != 1" )]
+        [Appearance("IsBabyToy", Visibility = ViewItemVisibility.Hide, Criteria = "[ToyCategoryNum] != 1")]
         [VisibleInListView(false)]
         [NotMapped]
-        public BabyToy BabyToy {
+        public BabyToy BabyToy
+        {
             get => ToyCategoryNum != ToyCategoryEnum.Baby ? null : _babyToy;
             set => _babyToy = value;
         }
@@ -86,7 +88,7 @@ namespace Toys.Module.BusinessObjects
         [NotMapped]
         public PreSchoolToy PreSchoolToy
         {
-            get => ToyCategoryNum != ToyCategoryEnum.PreSchool? null : _preSchoolToy;
+            get => ToyCategoryNum != ToyCategoryEnum.PreSchool ? null : _preSchoolToy;
             set => _preSchoolToy = value;
         }
 
@@ -104,27 +106,27 @@ namespace Toys.Module.BusinessObjects
 
         IObjectSpace persistentObjectSpace => ((NonPersistentObjectSpace)ObjectSpace)?.AdditionalObjectSpaces?.FirstOrDefault();
 
-        [DataSourceProperty("Brands")]
-        [NotMapped]
-        [ImmediatePostData]
-        public virtual Brand Brand
-        {
-            get => persistentObjectSpace?.GetObjectByKey<Brand>(BrandId);
-            set
-            {
-                BrandId = value.Id; 
-                OnPropertyChanged();
-            }
-        }
+        //[DataSourceProperty("Brands")]
+        //[NotMapped]
+        //[ImmediatePostData]
+        //public virtual Brand Brand
+        //{
+        //    get => persistentObjectSpace?.GetObjectByKey<Brand>(BrandId);
+        //    set
+        //    {
+        //        BrandId = value.Id; 
+        //        OnPropertyChanged();
+        //    }
+        //}
 
-        [Browsable(false)] public IList<Brand> Brands => persistentObjectSpace?.GetObjects<Brand>(CriteriaOperator.Parse("[Id] > 0"));
+        //[Browsable(false)] public IList<Brand> Brands => persistentObjectSpace?.GetObjects<Brand>(CriteriaOperator.Parse("[Id] > 0"));
 
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            if (PropertyChanged == null) return;
-            if (ObjectSpace == null) return;
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
+        //private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        //{
+        //    if (PropertyChanged == null) return;
+        //    if (ObjectSpace == null) return;
+        //    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        //}
 
         [Browsable(false)]
         public string SearchText { get; set; }
@@ -161,16 +163,16 @@ namespace Toys.Module.BusinessObjects
             var os = ((NonPersistentObjectSpace)ObjectSpace).AdditionalObjectSpaces.FirstOrDefault();  // why cant I use this instead of passing in as a parameter?
             var areSame = osParam.Equals(os); // true
 
-            var brand = os.FindObject<Brand>(CriteriaOperator.Parse("[Id] = ?", BrandId));
-            if (brand == null)
-            {
-                throw new Exception($"Category {BrandId} was not found");
-            }
+            //var brand = os.FindObject<Brand>(CriteriaOperator.Parse("[Id] = ?", BrandId));
+            //if (brand == null)
+            //{
+            //    throw new Exception($"Category {BrandId} was not found");
+            //}
 
             var toy = os.FindObject<Toy>(CriteriaOperator.Parse("[Id] = ?", Id));
             toy.Name = ToyName;
-            toy.Brand = brand;
-            toy.ToyCategory = ToyCategory;
+        //    toy.Brand = brand;
+            toy.ToyCategory = _toyCategory;
             os.SetModified(toy);
         }
 
