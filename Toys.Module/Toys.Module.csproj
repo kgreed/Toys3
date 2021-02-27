@@ -259,7 +259,9 @@
     <Compile Include="BusinessObjects\BabyToy.cs" />
     <Compile Include="BusinessObjects\INonPersistent.cs" />
     <Compile Include="BusinessObjects\IToggleRHS.cs" />
+    <Compile Include="BusinessObjects\IToyType.cs" />
     <Compile Include="BusinessObjects\MyInitializer.cs" />
+    <Compile Include="BusinessObjects\NonPersistentObjectBase.cs" />
     <Compile Include="BusinessObjects\NPToy.cs" />
     <Compile Include="BusinessObjects\PreSchoolToy.cs" />
     <Compile Include="BusinessObjects\ToddlerToy.cs" />
@@ -267,16 +269,28 @@
     <Compile Include="BusinessObjects\ToyCategoryEnum.cs" />
     <Compile Include="BusinessObjects\ToysContextInitializer.cs" />
     <Compile Include="DatabaseUpdate\Updater.cs" />
+    <Compile Include="DataStoreMapping.cs" />
+    <Compile Include="DataStoreObjectLoader.cs" />
+    <Compile Include="DataStoreObjectSaver.cs" />
     <Compile Include="DTO\BabyToyDto.cs" />
     <Compile Include="DTO\PreSchoolToyDto.cs" />
     <Compile Include="DTO\ToddlerToyDto.cs" />
-    <Compile Include="Module.cs">
+    <Compile Include="GenHelper.cs" />
+    <Compile Include="GlobalServiceProvider.cs" />
+    <Compile Include="NonPersistentObjectFactoryBase.cs" />
+    <Compile Include="NPClient.cs" />
+    <Compile Include="NPFactory.cs" />
+    <Compile Include="ObjectMap.cs" />
+    <Compile Include="SimpleDataStoreCriteriaVisitor.cs" />
+    <Compile Include="ToysModule.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Module.Designer.cs">
-      <DependentUpon>Module.cs</DependentUpon>
+    <Compile Include="ToysModule.Designer.cs">
+      <DependentUpon>ToysModule.cs</DependentUpon>
     </Compile>
+    <Compile Include="NonPersistentObjectSpaceHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TransientNonPersistentObjectAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Model.DesignedDiffs.xafml" />

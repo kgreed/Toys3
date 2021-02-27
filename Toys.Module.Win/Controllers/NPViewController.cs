@@ -15,6 +15,8 @@ namespace Toys.Module.Controllers
     // https://documentation.devexpress.com/eXpressAppFramework/115672/Task-Based-Help/Business-Model-Design/Non-Persistent-Objects/How-to-Perform-CRUD-Operations-with-Non-Persistent-Objects
     public partial class NonPersistentController : ObjectViewController<ListView, INonPersistent>
     {
+       // public event EventHandler<ViewCreatingEventArgs> ViewCreating;
+        
         private DevExpress.ExpressApp.Actions.ParametrizedAction parametrizedAction1;
         private IContainer components;
         private static List<INonPersistent> objectsCache;
@@ -29,34 +31,69 @@ namespace Toys.Module.Controllers
             this.TargetObjectType = typeof(INonPersistent);
             
         }
-        private void ObjectSpace_CustomRefresh(object sender, HandledEventArgs e)
-        {
-            IObjectSpace objectSpace = (IObjectSpace)sender;
-            LoadObjectsCache(objectSpace);
-            objectSpace.ReloadCollection(objectsCache);
-        }
+        //private void ObjectSpace_CustomRefresh(object sender, HandledEventArgs e)
+        //{
+        //    IObjectSpace objectSpace = (IObjectSpace)sender;
+        //    LoadObjectsCache(objectSpace);
+        //    objectSpace.ReloadCollection(objectsCache);
+        //}
 
         private void NonPersistentObjectSpace_ObjectsGetting(Object sender, ObjectsGettingEventArgs e)
         {
-            ITypeInfo info = XafTypesInfo.Instance.FindTypeInfo(e.ObjectType);
+            var objectSpace = (IObjectSpace) sender;
+            var collection = new DynamicCollection(objectSpace, e.ObjectType, e.Criteria, e.Sorting, e.InTransaction);
+            collection.FetchObjects += DynamicCollection_FetchObjects;
+            e.Objects = collection;
 
-            if (!info.Implements<INonPersistent>()) return;
-            IObjectSpace objectSpace = (IObjectSpace)sender;
-            BindingList<INonPersistent> objects = new BindingList<INonPersistent>
-            {
-                AllowNew = false,
-                AllowEdit = true,
-                AllowRemove = false
-            };
+            //ITypeInfo info = XafTypesInfo.Instance.FindTypeInfo(e.ObjectType);
 
-            LoadObjectsCache(objectSpace);
-            foreach (INonPersistent obj in objectsCache)
-            {
-                objects.Add(objectSpace.GetObject(obj));
-            }
-            e.Objects = objects;
+            //if (!info.Implements<INonPersistent>()) return;
+            //IObjectSpace objectSpace = (IObjectSpace)sender;
+            //BindingList<INonPersistent> objects = new BindingList<INonPersistent>
+            //{
+            //    AllowNew = false,
+            //    AllowEdit = true,
+            //    AllowRemove = false
+            //};
+
+            //LoadObjectsCache(objectSpace);
+            //foreach (INonPersistent obj in objectsCache)
+            //{
+            //    objects.Add(objectSpace.GetObject(obj));
+            //}
+            //e.Objects = objects;
         }
+        private void DynamicCollection_FetchObjects(object sender, FetchObjectsEventArgs e)
+        {
+            try
+            {
+                
 
+                var objectSpace = ((DynamicCollection)sender).ObjectSpace;
+                LoadObjectsCache(objectSpace);
+
+                BindingList<INonPersistent> objects = new BindingList<INonPersistent>
+                {
+                    AllowNew = false,
+                    AllowEdit = true,
+                    AllowRemove = false
+                };
+
+                foreach (INonPersistent obj in objectsCache)
+                {
+                    objects.Add(objectSpace.GetObject(obj));
+                }
+
+                e.Objects = objectsCache;
+                e.ShapeData = true;
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
+          
+        }
         private void LoadObjectsCache(IObjectSpace objectSpace)
         {
             var npObj = (INonPersistent)Activator.CreateInstance(View.ObjectTypeInfo.Type);
@@ -118,6 +155,7 @@ namespace Toys.Module.Controllers
                 editor.GridView.RefreshRow(editor.GridView.FocusedRowHandle);
         }
 
+        
 
         protected override void OnActivated()
         {
@@ -130,15 +168,31 @@ namespace Toys.Module.Controllers
             nonPersistentObjectSpace.Committing += NonPersistentObjectSpace_Committing;
             var persistentOS = this.Application.CreateObjectSpace(typeof(Toy));
             nonPersistentObjectSpace.AdditionalObjectSpaces.Add(persistentOS);
-            ObjectSpace.CustomRefresh += ObjectSpace_CustomRefresh;
+             
+           // ObjectSpace.CustomRefresh += ObjectSpace_CustomRefresh;
             ObjectSpace.ObjectChanged += ObjectSpace_ObjectChanged;
+            View.CreateCustomCurrentObjectDetailView += View_CreateCustomCurrentObjectDetailView;
+            View.EditViewCreated += View_EditViewCreated;
             View.CreateCustomCurrentObjectDetailView += NonPersistentController_CreateCustomCurrentObjectDetailView;
 
             View.ProcessSelectedItem += View_ProcessSelectedItem;
-           
+            
+            //ViewCreating += NonPersistentController_ViewCreating;
 
             ObjectSpace.Refresh();
         }
+
+        private void View_CreateCustomCurrentObjectDetailView(object sender, CreateCustomCurrentObjectDetailViewEventArgs e)
+        {
+            Debug.Print("hi");
+        }
+
+        private void View_EditViewCreated(object sender, DetailViewCreatedEventArgs e)
+        {
+            Debug.Print("hi");
+        }
+
+        
 
         private void View_ProcessSelectedItem(object sender, EventArgs e)
         {
@@ -176,7 +230,8 @@ namespace Toys.Module.Controllers
                 nonPersistentObjectSpace.ObjectByKeyGetting -= NonPersistentObjectSpace_ObjectByKeyGetting;
                 nonPersistentObjectSpace.ObjectGetting -= NonPersistentObjectSpace_ObjectGetting;
                 nonPersistentObjectSpace.Committing -= NonPersistentObjectSpace_Committing;
-                ObjectSpace.CustomRefresh -= ObjectSpace_CustomRefresh;
+                View.EditViewCreated -= View_EditViewCreated;
+                //     ObjectSpace.CustomRefresh -= ObjectSpace_CustomRefresh;
                 View.CreateCustomCurrentObjectDetailView -= NonPersistentController_CreateCustomCurrentObjectDetailView;
                 View.ProcessSelectedItem -= View_ProcessSelectedItem;
                 var persistentOS = nonPersistentObjectSpace.AdditionalObjectSpaces.FirstOrDefault();
@@ -187,6 +242,8 @@ namespace Toys.Module.Controllers
                 }
             }
             ObjectSpace.ObjectChanged -= ObjectSpace_ObjectChanged;
+           // ViewCreating -= NonPersistentController_ViewCreating;
+
             base.OnDeactivated();
         }
 

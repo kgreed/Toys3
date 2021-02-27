@@ -25,7 +25,7 @@ namespace Toys.Module.BusinessObjects
     [DomainComponent]
     [DefaultClassOptions]
     [NavigationItem("1 Main")]
-    public class NPToy : INonPersistent, IObjectSpaceLink, INotifyPropertyChanged, IXafEntityObject, IToggleRHS
+    public class NPToy :  NonPersistentObjectBase //INonPersistent, IObjectSpaceLink, INotifyPropertyChanged, IXafEntityObject, IToggleRHS
     {
         public NPToy() {
             
@@ -225,10 +225,10 @@ namespace Toys.Module.BusinessObjects
             toy.Id = Id;
             return toy;
         }
-    }
 
-    internal interface IToyType
-    {
-        int Id { get; set; }
+        public void SetKey(string value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

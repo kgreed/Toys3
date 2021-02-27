@@ -30,6 +30,9 @@ namespace Toys.Win {
             InitializeComponent();
 			InitializeDefaults();
         }
+
+        
+
         protected override void CreateDefaultObjectSpaceProvider(CreateCustomObjectSpaceProviderEventArgs args) {
 			if(args.Connection != null) {
 				args.ObjectSpaceProviders.Add(new EFObjectSpaceProvider(typeof(ToysDbContext), TypesInfo, null, (DbConnection)args.Connection));
