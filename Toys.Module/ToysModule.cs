@@ -46,27 +46,21 @@ namespace Toys.Module {
         private void Application_SetupComplete(object sender, EventArgs e)
         {
             nonPersistentObjectSpaceHelper = new NonPersistentObjectSpaceHelper((XafApplication)sender, typeof(BaseObject));
-            nonPersistentObjectSpaceHelper.AdapterCreators.Add(npos => {
-                var types = new Type[] { typeof(NPToy)  };
+            nonPersistentObjectSpaceHelper.AdapterCreators.Add(npos =>
+            {
+                var types = new Type[] { typeof(NPToy) };
                 var map = new ObjectMap(npos, types);
                 new TransientNonPersistentObjectAdapter(npos, map, new NPFactory(map));
             });
         }
         private void Application_ViewCreating(object sender, ViewCreatingEventArgs e)
         {
-            //if (e.ViewID == "NPToy_DetailView")
-            //{
-
-            //}
-
-            //var detailView = e.View as DetailView;
-            //if (detailView != null)
-            //{
-            //    Debug.Print(detailView.Caption);
-            //    //To avoid assigning multiple adapters to the same Object Space, you can create a type-specific adapter in the XafApplication.ViewCreating event handler. Use the e.ViewID parameter to determine which adapter is required.
-            //}
-
-            //Debug.Print("hi");
+            //nonPersistentObjectSpaceHelper = new NonPersistentObjectSpaceHelper((XafApplication)sender, typeof(BaseObject));
+            //nonPersistentObjectSpaceHelper.AdapterCreators.Add(npos => {
+            //    var types = new Type[] { typeof(NPToy) };
+            //    var map = new ObjectMap(npos, types);
+            //    new TransientNonPersistentObjectAdapter(npos, map, new NPFactory(map));
+            //});
         }
     }
 }

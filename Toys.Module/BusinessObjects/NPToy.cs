@@ -40,15 +40,11 @@ namespace Toys.Module.BusinessObjects
         public int CacheIndex { get; set; }
 
         private string _name;
-        [ImmediatePostData]
+        //[ImmediatePostData]
         public string ToyName
         {
             get => _name;
-            set
-            {
-                _name = value;
-                OnPropertyChanged();
-            }
+            set { SetPropertyValue(nameof(ToyName), ref _name, value); }
         }
 
         //[Browsable(false)]
