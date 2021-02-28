@@ -72,8 +72,6 @@ namespace Toys.Module
                 ms.Position = 0;
                 ds.ReadXml(ms);
             }
-            // var gen = new GenHelper();
-           
             var dtToys = ds.Tables["NPToy"];
              
             var o = new NPToy();

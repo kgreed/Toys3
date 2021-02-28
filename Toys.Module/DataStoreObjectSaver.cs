@@ -35,70 +35,62 @@ namespace Toys.Module
             }
             os.CommitChanges();
 
-            //var statements = new List<ModificationStatement>();
-            //var identityAwaiters = new List<Action<object>>();
-            //foreach (var obj in toDelete)
-            //{
-            //    DeleteObject(obj, statements);
-            //}
-            //foreach (var obj in toInsert)
-            //{
-            //    InsertObject(obj, statements, identityAwaiters);
-            //}
-            //foreach (var obj in toUpdate)
-            //{
-            //    UpdateObject(obj, statements);
-            //}
-            //var result = dataStore.ModifyData(statements.ToArray());
-            //foreach (var identity in result.Identities)
-            //{
-            //    identityAwaiters[identity.Tag - 1].Invoke(identity.Value);
-            //}
+            var statements = new List<ModificationStatement>();
+            var identityAwaiters = new List<Action<object>>();
+            foreach (var obj in toDelete)
+            {
+                DeleteObject(obj, statements);
+            }
+            foreach (var obj in toInsert)
+            {
+                InsertObject(obj, statements, identityAwaiters);
+            }
+            foreach (var obj in toUpdate)
+            {
+                UpdateObject(obj, statements);
+            }
+            var result = dataStore.ModifyData(statements.ToArray());
+            foreach (var identity in result.Identities)
+            {
+                identityAwaiters[identity.Tag - 1].Invoke(identity.Value);
+            }
         }
         private void DeleteObject(object obj, IList<ModificationStatement> statements)
         {
-            if (mappings.TryGetValue(obj.GetType(), out var mapping))
-            {
-                string alias = null;
-                var statement = new DeleteStatement(mapping.Table, alias);
-                SetupUpdateDeleteStatement(statement, obj, mapping, alias);
-                statements.Add(statement);
-            }
+            if (!mappings.TryGetValue(obj.GetType(), out var mapping)) return;
+            string alias = null;
+            var statement = new DeleteStatement(mapping.Table, alias);
+            SetupUpdateDeleteStatement(statement, obj, mapping, alias);
+            statements.Add(statement);
         }
         private void InsertObject(object obj, IList<ModificationStatement> statements, List<Action<object>> identityAwaiters)
         {
-            if (mappings.TryGetValue(obj.GetType(), out var mapping))
+            if (!mappings.TryGetValue(obj.GetType(), out var mapping)) return;
+            var statement = new InsertStatement(mapping.Table, "T");
+            if (mapping.Table.PrimaryKey != null)
             {
-                var statement = new InsertStatement(mapping.Table, "T");
-                if (mapping.Table.PrimaryKey != null)
+                foreach (var columnName in mapping.Table.PrimaryKey.Columns)
                 {
-                    foreach (var columnName in mapping.Table.PrimaryKey.Columns)
-                    {
-                        var column = mapping.Table.GetColumn(columnName);
-                        if (column.IsIdentity)
-                        {
-                            identityAwaiters.Add(v => { mapping.SetKey(obj, v); });
-                            statement.IdentityColumn = column.Name;
-                            statement.IdentityColumnType = column.ColumnType;
-                            statement.IdentityParameter = new ParameterValue(identityAwaiters.Count);
-                            break;
-                        }
-                    }
+                    var column = mapping.Table.GetColumn(columnName);
+                    if (!column.IsIdentity) continue;
+                    identityAwaiters.Add(v => { mapping.SetKey(obj, v); });
+                    statement.IdentityColumn = column.Name;
+                    statement.IdentityColumnType = column.ColumnType;
+                    statement.IdentityParameter = new ParameterValue(identityAwaiters.Count);
+                    break;
                 }
-                SetupInsertUpdateStatement(statement, obj, mapping);
-                statements.Add(statement);
             }
+            SetupInsertUpdateStatement(statement, obj, mapping);
+            statements.Add(statement);
         }
         private void UpdateObject(object obj, IList<ModificationStatement> statements)
         {
-            if (mappings.TryGetValue(obj.GetType(), out var mapping))
-            {
-                string alias = null;
-                var statement = new UpdateStatement(mapping.Table, alias);
-                SetupUpdateDeleteStatement(statement, obj, mapping, alias);
-                SetupInsertUpdateStatement(statement, obj, mapping);
-                statements.Add(statement);
-            }
+            if (!mappings.TryGetValue(obj.GetType(), out var mapping)) return;
+            string alias = null;
+            var statement = new UpdateStatement(mapping.Table, alias);
+            SetupUpdateDeleteStatement(statement, obj, mapping, alias);
+            SetupInsertUpdateStatement(statement, obj, mapping);
+            statements.Add(statement);
         }
         private DBColumn GetKeyColumn(DataStoreMapping mapping)
         {
@@ -118,11 +110,9 @@ namespace Toys.Module
             for (int i = 0; i < values.Length; i++)
             {
                 var column = mapping.Table.Columns[i];
-                if (!column.IsIdentity)
-                {
-                    statement.Operands.Add(new QueryOperand(column, null));
-                    statement.Parameters.Add(new OperandValue(values[i]));
-                }
+                if (column.IsIdentity) continue;
+                statement.Operands.Add(new QueryOperand(column, null));
+                statement.Parameters.Add(new OperandValue(values[i]));
             }
         }
     }
