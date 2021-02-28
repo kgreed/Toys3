@@ -21,16 +21,19 @@ namespace Toys.Module
         }
         public void SaveObjects(ICollection toInsert, ICollection toUpdate, ICollection toDelete, IObjectSpace kg_npos)
         {
-            
-            
+
+            var os = ((NonPersistentObjectSpace)kg_npos).AdditionalObjectSpaces.FirstOrDefault();  // why cant I use this instead of passing in as a parameter?
+            //var areSame = osParam.Equals(os); // true
+
 
             foreach (var obj in toUpdate)
             {
                // UpdateObject(obj, statements);
 
                var np = obj as NPToy;
-               np.NPOnSaving(kg_npos);
+               np.NPOnSaving(os);
             }
+            os.CommitChanges();
 
             //var statements = new List<ModificationStatement>();
             //var identityAwaiters = new List<Action<object>>();

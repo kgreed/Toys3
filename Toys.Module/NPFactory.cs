@@ -36,6 +36,7 @@ namespace Toys.Module
         }
         public override IEnumerable GetObjects(Type objectType, CriteriaOperator criteria, IList<DevExpress.Xpo.SortProperty> sorting)
         {
+            Storage.RefreshDemoData();
             if (Storage.Mappings.TryGetValue(objectType, out var mapping))
             {
                 return WrapLoading(() => {

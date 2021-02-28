@@ -102,9 +102,9 @@ namespace Toys.Module.BusinessObjects
             set => _toddlerToy = value;
         }
 
-        [NotMapped]
+        //[NotMapped]
 
-        IObjectSpace persistentObjectSpace => ((NonPersistentObjectSpace)ObjectSpace)?.AdditionalObjectSpaces?.FirstOrDefault();
+       // IObjectSpace persistentObjectSpace => ((NonPersistentObjectSpace)ObjectSpace)?.AdditionalObjectSpaces?.FirstOrDefault();
 
         //[DataSourceProperty("Brands")]
         //[NotMapped]
@@ -158,11 +158,9 @@ namespace Toys.Module.BusinessObjects
             }
         }
 
-        public void NPOnSaving(IObjectSpace osParam)
+        public void NPOnSaving(IObjectSpace os )
         {
-            var os = ((NonPersistentObjectSpace)ObjectSpace).AdditionalObjectSpaces.FirstOrDefault();  // why cant I use this instead of passing in as a parameter?
-            var areSame = osParam.Equals(os); // true
-
+           
             //var brand = os.FindObject<Brand>(CriteriaOperator.Parse("[Id] = ?", BrandId));
             //if (brand == null)
             //{
