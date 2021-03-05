@@ -160,18 +160,17 @@ namespace Toys.Module.BusinessObjects
 
         public void NPOnSaving(IObjectSpace os )
         {
-           
+
             //var brand = os.FindObject<Brand>(CriteriaOperator.Parse("[Id] = ?", BrandId));
             //if (brand == null)
             //{
             //    throw new Exception($"Category {BrandId} was not found");
             //}
-
+            //    toy.Brand = brand;
             var toy = os.FindObject<Toy>(CriteriaOperator.Parse("[Id] = ?", Id));
             toy.Name = ToyName;
-        //    toy.Brand = brand;
             toy.ToyCategory = _toyCategory;
-            os.SetModified(toy);
+            os.SetModified(toy);  // remember to call os.CommitChanges()
         }
 
         //[NotMapped]
