@@ -14,6 +14,7 @@ using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.DomainLogics;
 using DevExpress.ExpressApp.Model.NodeGenerators; 
 using System.Data.Entity;
+using DevExpress.Persistent.BaseImpl;
 using Toys.Module.BusinessObjects;
 
 namespace Toys.Module {
@@ -32,13 +33,59 @@ namespace Toys.Module {
         public ToysModule() {
             InitializeComponent();
         }
+        private GlobalObjectStorage globalNonPersistentObjects;
         public override IEnumerable<ModuleUpdater> GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB) {
             ModuleUpdater updater = new DatabaseUpdate.Updater(objectSpace, versionFromDB);
             return new ModuleUpdater[] { updater }; 
         }
         public override void Setup(XafApplication application) {
             base.Setup(application);
+
+            CreateGlobalNonPersistentObjects();
+            Application.ObjectSpaceCreated += Application_ObjectSpaceCreated;
             // Manage various aspects of the application UI and behavior at the module level.
+        }
+        private void Application_ObjectSpaceCreated(object sender, ObjectSpaceCreatedEventArgs e)
+        {
+            NonPersistentObjectSpace nonPersistentObjectSpace = e.ObjectSpace as NonPersistentObjectSpace;
+            if (nonPersistentObjectSpace != null)
+            {
+                nonPersistentObjectSpace.AdditionalObjectSpaces.Add(Application.CreateObjectSpace(typeof(BaseObject)));
+                nonPersistentObjectSpace.AutoDisposeAdditionalObjectSpaces = true;
+                nonPersistentObjectSpace.AutoRefreshAdditionalObjectSpaces = true;
+                nonPersistentObjectSpace.ModifiedChanging += NonPersistentObjectSpace_ModifiedChanging;
+                new NonPersistentObjectSpaceExtender(nonPersistentObjectSpace, globalNonPersistentObjects);
+            }
+        }
+        private void NonPersistentObjectSpace_ModifiedChanging(object sender, ObjectSpaceModificationEventArgs e)
+        {
+            if (e.Object is BaseNonPersistentClass)
+            {
+                e.Cancel = false;
+            }
+        }
+        private void CreateGlobalNonPersistentObjects()
+        {
+            globalNonPersistentObjects = new GlobalObjectStorage();
+            var npToy = new NPToy(0,"");
+            var objects = npToy.GetData();
+            foreach (var obj in objects)
+            {
+                globalNonPersistentObjects.Add(obj);
+            }
+
+            //SimpleNonPersistentClass simpleNonPersistentClass = new SimpleNonPersistentClass(0, "Simple Non-Persistent Object");
+            //NonPersistentClassWithNonPersistentCollection nonPersistentClassWithNonPersistentCollection = new NonPersistentClassWithNonPersistentCollection(1, "Non-Persistent Object with a Non-Persistent Collection");
+            //NonPersistentClassWithPersistentProperty nonPersistentClassWithPersistentProperty = new NonPersistentClassWithPersistentProperty(2, "First Non-Persistent Object with a Persistent Property");
+            //NonPersistentClassWithPersistentProperty nonPersistentClassWithPersistentProperty1 = new NonPersistentClassWithPersistentProperty(3, "Second Non-Persistent Object with a Persistent Property");
+
+            //globalNonPersistentObjects.Add(simpleNonPersistentClass);
+            //globalNonPersistentObjects.Add(nonPersistentClassWithNonPersistentCollection);
+            //globalNonPersistentObjects.Add(nonPersistentClassWithPersistentProperty);
+            //globalNonPersistentObjects.Add(nonPersistentClassWithPersistentProperty1);
+
+            //nonPersistentClassWithNonPersistentCollection.AddNonPersistentClassWithPersistentProperty(nonPersistentClassWithPersistentProperty);
+            //nonPersistentClassWithNonPersistentCollection.AddNonPersistentClassWithPersistentProperty(nonPersistentClassWithPersistentProperty1);
         }
     }
 }

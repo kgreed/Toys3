@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using DevExpress.ExpressApp.Data;
 using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
-
+ 
 namespace Toys.Module.BusinessObjects
 {
     [NavigationItem("2 Data")]

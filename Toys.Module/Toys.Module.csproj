@@ -255,12 +255,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NonPersistentObjects\BaseNonPersistentClass.cs" />
     <Compile Include="BusinessObjects\Brand.cs" />
     <Compile Include="BusinessObjects\BabyToy.cs" />
+    <Compile Include="BusinessObjects\GlobalObjectStorage.cs" />
     <Compile Include="BusinessObjects\INonPersistent.cs" />
+    <Compile Include="BusinessObjects\IObjectMap.cs" />
     <Compile Include="BusinessObjects\IToggleRHS.cs" />
     <Compile Include="BusinessObjects\MyInitializer.cs" />
-    <Compile Include="BusinessObjects\NPToy.cs" />
+    <Compile Include="NonPersistentObjects\NonPersistentObjectActivatorController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="NonPersistentObjects\NonPersistentObjectSpaceExtender.cs" />
+    <Compile Include="NonPersistentObjects\NPToy.cs" />
     <Compile Include="BusinessObjects\PreSchoolToy.cs" />
     <Compile Include="BusinessObjects\ToddlerToy.cs" />
     <Compile Include="BusinessObjects\Toy.cs" />
@@ -301,6 +308,7 @@
   <ItemGroup>
     <None Include="Welcome.html" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

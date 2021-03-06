@@ -1,4 +1,4 @@
-﻿namespace Toys.Module.Win.Controllers
+﻿namespace Toys.Module.BusinessObjects
 {
     public interface   IToggleRHS
     {

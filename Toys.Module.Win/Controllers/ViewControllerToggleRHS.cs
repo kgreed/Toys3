@@ -16,6 +16,7 @@ using System.Text;
 using DevExpress.ExpressApp.Win.Editors;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Grid;
+using Toys.Module.BusinessObjects;
 namespace Toys.Module.Win.Controllers
 {
     // For more typical usage scenarios, be sure to check out https://documentation.devexpress.com/eXpressAppFramework/clsDevExpressExpressAppViewControllertopic.aspx.

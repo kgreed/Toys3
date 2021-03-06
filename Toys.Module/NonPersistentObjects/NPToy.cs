@@ -16,7 +16,6 @@ using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 using DevExpress.XtraScheduler.Outlook.Interop;
 using Toys.Module.DTO;
-using Toys.Module.Win.Controllers;
 using Exception = System.Exception;
 
 
@@ -25,18 +24,22 @@ namespace Toys.Module.BusinessObjects
     [DomainComponent]
     [DefaultClassOptions]
     [NavigationItem("1 Main")]
-    public class NPToy : INonPersistent, IObjectSpaceLink, INotifyPropertyChanged, IXafEntityObject, IToggleRHS
+    public class NPToy :BaseNonPersistentClass //: INonPersistent, IObjectSpaceLink, INotifyPropertyChanged, IXafEntityObject, IToggleRHS
     {
-        public NPToy() {
-            
-        }
+        public NPToy(Int32 id, String name) : base(id, name)
+        {
 
+        }
+        public NPToy( )  
+        {
+
+        }
         [DevExpress.ExpressApp.Data.Key]
         [ModelDefault("AllowEdit", "False")]
         public int Id { get; set; }
 
-        [Browsable(false)]
-        public int CacheIndex { get; set; }
+        
+        
 
         private string _name;
         [ImmediatePostData]
@@ -131,7 +134,7 @@ namespace Toys.Module.BusinessObjects
 
         [Browsable(false)]
         public string SearchText { get; set; }
-        public List<INonPersistent> GetData(IObjectSpace os)
+        public List<BaseNonPersistentClass> GetData()
         {
             var connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             using (var connect = new ToysDbContext(connectionString))
@@ -145,15 +148,9 @@ namespace Toys.Module.BusinessObjects
                     parameters.Add( new SqlParameter("@name",$"%{SearchText}%"));
                 }
                 var results = connect.Database.SqlQuery<NPToy>(sql,parameters.ToArray()).ToList();
-                var npresults = results.ConvertAll(x => (INonPersistent)x);
-                var index = 0;
-                foreach (INonPersistent np in npresults)
-                {
-                    np.CacheIndex = index;
-                    ((IObjectSpaceLink) np).ObjectSpace = os;
-                    index++;
-                }
-                return npresults;
+                
+                return results.ConvertAll(x => (BaseNonPersistentClass)x);
+             
             }
         }
 
@@ -185,17 +182,7 @@ namespace Toys.Module.BusinessObjects
         {
             ObjectSpace.SetModified(this);
         }
-        public void OnCreated()
-        {
-            //throw new NotImplementedException();
-        }
-
-        public void OnSaving()
-        {
-            Console.WriteLine("Saving");
-            //throw new NotImplementedException();
-        }
-
+       
         public void OnLoaded()
         {
             var os = ((NonPersistentObjectSpace)ObjectSpace).AdditionalObjectSpaces.FirstOrDefault();
