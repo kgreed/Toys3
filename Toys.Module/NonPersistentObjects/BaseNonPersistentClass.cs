@@ -25,20 +25,15 @@ namespace Toys.Module.BusinessObjects
         public BaseNonPersistentClass() : this(idCounter++, "") { }
         [Key]
         [Browsable(false)]
-        public Int32 ID
-        {
-            get { return id; }
-        }
+        public Int32 ID => id;
         public String Name
         {
-            get { return name; }
+            get => name;
             set
             {
-                if (name != value)
-                {
-                    name = value;
-                    RaisePropertyChanged(nameof(Name));
-                }
+                if (name == value) return;
+                name = value;
+                RaisePropertyChanged(nameof(Name));
             }
         }
         public virtual BaseNonPersistentClass Clone(IObjectMap map)
@@ -51,8 +46,8 @@ namespace Toys.Module.BusinessObjects
         [Browsable(false)]
         public IObjectSpace ObjectSpace
         {
-            get { return objectSpace; }
-            set { objectSpace = value; }
+            get => objectSpace;
+            set => objectSpace = value;
         }
         // INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;

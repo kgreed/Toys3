@@ -47,15 +47,12 @@ namespace Toys.Module {
         }
         private void Application_ObjectSpaceCreated(object sender, ObjectSpaceCreatedEventArgs e)
         {
-            NonPersistentObjectSpace nonPersistentObjectSpace = e.ObjectSpace as NonPersistentObjectSpace;
-            if (nonPersistentObjectSpace != null)
-            {
-                nonPersistentObjectSpace.AdditionalObjectSpaces.Add(Application.CreateObjectSpace(typeof(BaseObject)));
-                nonPersistentObjectSpace.AutoDisposeAdditionalObjectSpaces = true;
-                nonPersistentObjectSpace.AutoRefreshAdditionalObjectSpaces = true;
-                nonPersistentObjectSpace.ModifiedChanging += NonPersistentObjectSpace_ModifiedChanging;
-                new NonPersistentObjectSpaceExtender(nonPersistentObjectSpace, globalNonPersistentObjects);
-            }
+            if (!(e.ObjectSpace is NonPersistentObjectSpace nonPersistentObjectSpace)) return;
+            nonPersistentObjectSpace.AdditionalObjectSpaces.Add(Application.CreateObjectSpace(typeof(BaseObject)));
+            nonPersistentObjectSpace.AutoDisposeAdditionalObjectSpaces = true;
+            nonPersistentObjectSpace.AutoRefreshAdditionalObjectSpaces = true;
+            nonPersistentObjectSpace.ModifiedChanging += NonPersistentObjectSpace_ModifiedChanging;
+            new NonPersistentObjectSpaceExtender(nonPersistentObjectSpace, globalNonPersistentObjects);
         }
         private void NonPersistentObjectSpace_ModifiedChanging(object sender, ObjectSpaceModificationEventArgs e)
         {

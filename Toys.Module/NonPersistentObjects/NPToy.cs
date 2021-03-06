@@ -134,7 +134,7 @@ namespace Toys.Module.BusinessObjects
 
         [Browsable(false)]
         public string SearchText { get; set; }
-        public List<BaseNonPersistentClass> GetData()
+        public List<NPToy> GetData()
         {
             var connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             using (var connect = new ToysDbContext(connectionString))
@@ -148,9 +148,9 @@ namespace Toys.Module.BusinessObjects
                     parameters.Add( new SqlParameter("@name",$"%{SearchText}%"));
                 }
                 var results = connect.Database.SqlQuery<NPToy>(sql,parameters.ToArray()).ToList();
-                
-                return results.ConvertAll(x => (BaseNonPersistentClass)x);
-             
+                return results;
+                // return results.ConvertAll(x => (BaseNonPersistentClass)x);
+
             }
         }
 
