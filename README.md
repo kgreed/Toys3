@@ -1,4 +1,4 @@
 # Toys3  
-An upgrade of Toys
-https://supportcenter.devexpress.com/ticket/details/t976035/nonpersistentobjectspace-committing-ismodified-true-but-zero-modifiedobjects
+For Dev Express Issue
+https://supportcenter.devexpress.com/ticket/details/t976074/nonpersistent-business-object-1021-when-entering-detail-view-from-listview
 
