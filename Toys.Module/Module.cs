@@ -66,7 +66,7 @@ namespace Toys.Module {
             globalNonPersistentObjects = new GlobalObjectStorage();
             var npToy = new NPToy(0,"");
             var objects = npToy.GetData();
-            foreach (var obj in objects)
+            foreach (NPToy obj in objects)
             {
                 globalNonPersistentObjects.Add(obj);
             }
