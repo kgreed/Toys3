@@ -157,10 +157,13 @@ namespace Toys.Module.BusinessObjects
         public override BaseNonPersistent Clone(IObjectMap map)
         {
             var clone =Activator.CreateInstance(this.GetType(), this.ID, this.Name);
-            map.AcceptObject(clone);
+            var tclone = clone as NPToy;
+            tclone.Id = Id;
+            tclone.BrandId = BrandId;
+            tclone.Name = Name;
+            tclone.ToyCategory = ToyCategory;
+            map.AcceptObject(tclone);
             return clone as BaseNonPersistent;
-
-            // return base.Clone(map);
         }
 
         //public virtual BaseNonPersistent Clone(IObjectMap map)
