@@ -31,24 +31,18 @@ namespace Toys.Module.BusinessObjects
         {
             var args = e.ActionArguments;
             var shortcut = args.SelectedChoiceActionItem.Data as ViewShortcut;
-            if (shortcut != null)
-            {
-                var model = Application.FindModelView(shortcut.ViewId);
-                if (model is IModelDetailView && string.IsNullOrEmpty(shortcut.ObjectKey))
-                {
-                    var objectType = ((IModelDetailView)model).ModelClass.TypeInfo.Type;
-                    if (typeof(BaseNonPersistentClass).IsAssignableFrom(objectType))
-                    {
-                        var objectSpace = Application.CreateObjectSpace(objectType);
-                        var obj = objectSpace.CreateObject(objectType);
-                        var detailView = Application.CreateDetailView(objectSpace, shortcut.ViewId, true, obj);
-                        detailView.ViewEditMode = DevExpress.ExpressApp.Editors.ViewEditMode.Edit;
-                        args.ShowViewParameters.CreatedView = detailView;
-                        args.ShowViewParameters.TargetWindow = TargetWindow.Current;
-                        e.Handled = true;
-                    }
-                }
-            }
+            if (shortcut == null) return;
+            var model = Application.FindModelView(shortcut.ViewId);
+            if (!(model is IModelDetailView) || !string.IsNullOrEmpty(shortcut.ObjectKey)) return;
+            var objectType = ((IModelDetailView)model).ModelClass.TypeInfo.Type;
+            if (!typeof(BaseNonPersistent).IsAssignableFrom(objectType)) return;
+            var objectSpace = Application.CreateObjectSpace(objectType);
+            var obj = objectSpace.CreateObject(objectType);
+            var detailView = Application.CreateDetailView(objectSpace, shortcut.ViewId, true, obj);
+            detailView.ViewEditMode = DevExpress.ExpressApp.Editors.ViewEditMode.Edit;
+            args.ShowViewParameters.CreatedView = detailView;
+            args.ShowViewParameters.TargetWindow = TargetWindow.Current;
+            e.Handled = true;
         }
     }
 }

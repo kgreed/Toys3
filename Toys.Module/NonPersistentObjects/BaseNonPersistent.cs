@@ -4,41 +4,43 @@ using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Data;
 namespace Toys.Module.BusinessObjects
 {
-    public abstract class BaseNonPersistentClass : INotifyPropertyChanged, IObjectSpaceLink
+    public abstract class BaseNonPersistent : INotifyPropertyChanged, IObjectSpaceLink
     {
-        protected static int idCounter = 4;
-        private Int32 id;
+        private static int _idCounter = 4;
+        private readonly int _id;
         private IObjectSpace objectSpace;
-        private String name;
+        private string _name;
 
-        protected virtual void RaisePropertyChanged(String propertyName)
+        protected virtual void RaisePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public BaseNonPersistentClass(Int32 id, String name)
+
+        protected BaseNonPersistent(int id, string name)
             : base()
         {
-            this.id = id;
-            this.name = name;
+            this._id = id;
+            this._name = name;
 
         }
-        public BaseNonPersistentClass() : this(idCounter++, "") { }
+
+        protected BaseNonPersistent() : this(_idCounter++, "") { }
         [Key]
         [Browsable(false)]
-        public Int32 ID => id;
-        public String Name
+        public int ID => _id;
+        public string Name
         {
-            get => name;
+            get => _name;
             set
             {
-                if (name == value) return;
-                name = value;
+                if (_name == value) return;
+                _name = value;
                 RaisePropertyChanged(nameof(Name));
             }
         }
-        public virtual BaseNonPersistentClass Clone(IObjectMap map)
+        public virtual BaseNonPersistent Clone(IObjectMap map)
         {
-            var clone = (BaseNonPersistentClass)Activator.CreateInstance(this.GetType(), this.ID, this.Name);
+            var clone = (BaseNonPersistent)Activator.CreateInstance(this.GetType(), this.ID, this.Name);
             map.AcceptObject(clone);
             return clone;
         }

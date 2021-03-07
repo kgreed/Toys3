@@ -1,37 +1,32 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 namespace Toys.Module.BusinessObjects
 {
     public class GlobalObjectStorage : IObjectMap
     {
-        private List<BaseNonPersistentClass> objects = new List<BaseNonPersistentClass>();
-        public IEnumerable<BaseNonPersistentClass> Objects { get { return objects.AsReadOnly(); } }
-        public void Add(BaseNonPersistentClass obj)
+        private readonly List<BaseNonPersistent> objects = new List<BaseNonPersistent>();
+        public IEnumerable<BaseNonPersistent> Objects => objects.AsReadOnly();
+
+        public void Add(BaseNonPersistent obj)
         {
             objects.Add(obj);
         }
-        public BaseNonPersistentClass FindObject(int key)
+        public BaseNonPersistent FindObject(int key)
         {
-            foreach (BaseNonPersistentClass obj in objects)
-            {
-                if (obj.ID == key)
-                {
-                    return obj;
-                }
-            }
-            return null;
+            return objects.FirstOrDefault(obj => obj.ID == key);
         }
-        public void SaveObject(BaseNonPersistentClass obj)
+        public void SaveObject(BaseNonPersistent obj)
         {
-            BaseNonPersistentClass found = FindObject(obj.ID);
+            var found = FindObject(obj.ID);
             if (found != null)
             {
                 objects.Remove(found);
             }
             objects.Add(obj.Clone(this));
         }
-        public void DeleteObject(BaseNonPersistentClass obj)
+        public void DeleteObject(BaseNonPersistent obj)
         {
-            BaseNonPersistentClass found = FindObject(obj.ID);
+            var found = FindObject(obj.ID);
             if (found != null)
             {
                 objects.Remove(found);
@@ -39,15 +34,12 @@ namespace Toys.Module.BusinessObjects
         }
         object IObjectMap.GetObject(object obj)
         {
-            BaseNonPersistentClass keyobj = obj as BaseNonPersistentClass;
-            if (keyobj != null)
+            if (obj is BaseNonPersistent keyobj)
             {
                 return FindObject(keyobj.ID);
             }
-            else
-            {
-                return obj;
-            }
+
+            return obj;
         }
         void IObjectMap.AcceptObject(object obj)
         {

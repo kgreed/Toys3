@@ -24,7 +24,7 @@ namespace Toys.Module.BusinessObjects
     [DomainComponent]
     [DefaultClassOptions]
     [NavigationItem("1 Main")]
-    public class NPToy :BaseNonPersistentClass //: INonPersistent, IObjectSpaceLink, INotifyPropertyChanged, IXafEntityObject, IToggleRHS
+    public class NPToy :BaseNonPersistent //: INonPersistent, IObjectSpaceLink, INotifyPropertyChanged, IXafEntityObject, IToggleRHS
     {
         public NPToy(Int32 id, String name) : base(id, name)
         {
@@ -153,6 +153,22 @@ namespace Toys.Module.BusinessObjects
 
             }
         }
+
+        public override BaseNonPersistent Clone(IObjectMap map)
+        {
+            var clone =Activator.CreateInstance(this.GetType(), this.ID, this.Name);
+            map.AcceptObject(clone);
+            return clone as BaseNonPersistent;
+
+            // return base.Clone(map);
+        }
+
+        //public virtual BaseNonPersistent Clone(IObjectMap map)
+        //{
+        //    var clone = (BaseNonPersistent)Activator.CreateInstance(this.GetType(), this.ID, this.Name);
+        //    map.AcceptObject(clone);
+        //    return clone;
+        //}
 
         public void NPOnSaving(IObjectSpace osParam)
         {

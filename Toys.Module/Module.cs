@@ -56,7 +56,7 @@ namespace Toys.Module {
         }
         private void NonPersistentObjectSpace_ModifiedChanging(object sender, ObjectSpaceModificationEventArgs e)
         {
-            if (e.Object is BaseNonPersistentClass)
+            if (e.Object is BaseNonPersistent)
             {
                 e.Cancel = false;
             }

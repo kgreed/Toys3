@@ -255,11 +255,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NonPersistentObjects\BaseNonPersistentClass.cs" />
+    <Compile Include="NonPersistentObjects\BaseNonPersistent.cs" />
     <Compile Include="BusinessObjects\Brand.cs" />
     <Compile Include="BusinessObjects\BabyToy.cs" />
     <Compile Include="BusinessObjects\GlobalObjectStorage.cs" />
-    <Compile Include="BusinessObjects\INonPersistent.cs" />
     <Compile Include="BusinessObjects\IObjectMap.cs" />
     <Compile Include="BusinessObjects\IToggleRHS.cs" />
     <Compile Include="BusinessObjects\MyInitializer.cs" />

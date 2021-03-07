@@ -8,7 +8,7 @@ namespace Toys.Module.BusinessObjects
     {
         private NonPersistentObjectSpace objectSpace;
         private GlobalObjectStorage globalObjects;
-        private Dictionary<int, BaseNonPersistentClass> localObjects;
+        private Dictionary<int, BaseNonPersistent> localObjects;
 
         object IObjectMap.GetObject(object obj)
         {
@@ -16,44 +16,39 @@ namespace Toys.Module.BusinessObjects
         }
         void IObjectMap.AcceptObject(object obj)
         {
-            BaseNonPersistentClass keyobj = obj as BaseNonPersistentClass;
-            if (keyobj != null)
+            if (obj is BaseNonPersistent keyobj)
             {
                 localObjects.Add(keyobj.ID, keyobj);
             }
         }
-        private BaseNonPersistentClass GetObject(BaseNonPersistentClass obj)
+        private BaseNonPersistent GetObject(BaseNonPersistent obj)
         {
             return !objectSpace.IsNewObject(obj) ? GetObjectByKey(obj.ID) : obj;
         }
-        private BaseNonPersistentClass GetObjectByKey(int key)
+        private BaseNonPersistent GetObjectByKey(int key)
         {
-            BaseNonPersistentClass obj;
-            if (!localObjects.TryGetValue(key, out obj))
+            if (!localObjects.TryGetValue(key, out var obj))
             {
                 obj = LoadObject(key);
             }
             return obj;
         }
-        private BaseNonPersistentClass LoadObject(int key)
+        private BaseNonPersistent LoadObject(int key)
         {
-            BaseNonPersistentClass obj = globalObjects.FindObject(key);
-            if (obj != null)
-            {
-                BaseNonPersistentClass clone = (BaseNonPersistentClass)obj.Clone(this);
-                clone.ObjectSpace = objectSpace;
-                return clone;
-            }
-            return null;
+            var obj = globalObjects.FindObject(key);
+            if (obj == null) return null;
+            var clone = (BaseNonPersistent)obj.Clone(this);
+            clone.ObjectSpace = objectSpace;
+            return clone;
         }
         private void ObjectSpace_ObjectsGetting(Object sender, ObjectsGettingEventArgs e)
         {
-            if (!typeof(BaseNonPersistentClass).IsAssignableFrom(e.ObjectType)) return;
-            BindingList<BaseNonPersistentClass> objects = new BindingList<BaseNonPersistentClass>
+            if (!typeof(BaseNonPersistent).IsAssignableFrom(e.ObjectType)) return;
+            var objects = new BindingList<BaseNonPersistent>
             {
                 AllowNew = true, AllowEdit = true, AllowRemove = true
             };
-            foreach (BaseNonPersistentClass obj in globalObjects.Objects)
+            foreach (var obj in globalObjects.Objects)
             {
                 if (e.ObjectType.IsInstanceOfType(obj))
                 {
@@ -64,24 +59,24 @@ namespace Toys.Module.BusinessObjects
         }
         private void ObjectSpace_ObjectByKeyGetting(Object sender, ObjectByKeyGettingEventArgs e)
         {
-            if (typeof(BaseNonPersistentClass).IsAssignableFrom(e.ObjectType) && e.Key is Int32)
+            if (typeof(BaseNonPersistent).IsAssignableFrom(e.ObjectType) && e.Key is Int32)
             {
                 e.Object = GetObjectByKey((Int32)e.Key);
             }
         }
         private void ObjectSpace_ObjectGetting(object sender, ObjectGettingEventArgs e)
         {
-            if (e.SourceObject is BaseNonPersistentClass obj)
+            if (e.SourceObject is BaseNonPersistent obj)
             {
                 e.TargetObject = GetObject(obj);
             }
         }
         private void ObjectSpace_Committing(Object sender, CancelEventArgs e)
         {
-            NonPersistentObjectSpace objectSpace = (NonPersistentObjectSpace)sender;
-            foreach (Object obj in objectSpace.ModifiedObjects)
+            var objectSpace = (NonPersistentObjectSpace)sender;
+            foreach (var obj in objectSpace.ModifiedObjects)
             {
-                if (!(obj is BaseNonPersistentClass baseobj)) continue;
+                if (!(obj is BaseNonPersistent baseobj)) continue;
                 if (objectSpace.IsDeletedObject(baseobj))
                 {
                     globalObjects.DeleteObject(baseobj);
@@ -98,7 +93,7 @@ namespace Toys.Module.BusinessObjects
         }
         private void ObjectSpace_Disposed(object sender, EventArgs e)
         {
-            NonPersistentObjectSpace objectSpace = sender as NonPersistentObjectSpace;
+            var objectSpace = sender as NonPersistentObjectSpace;
             objectSpace.ObjectsGetting -= ObjectSpace_ObjectsGetting;
             objectSpace.ObjectByKeyGetting -= ObjectSpace_ObjectByKeyGetting;
             objectSpace.ObjectGetting -= ObjectSpace_ObjectGetting;
@@ -109,7 +104,7 @@ namespace Toys.Module.BusinessObjects
         {
             this.objectSpace = objectSpace;
             this.globalObjects = globalObjects;
-            this.localObjects = new Dictionary<int, BaseNonPersistentClass>();
+            this.localObjects = new Dictionary<int, BaseNonPersistent>();
             if (objectSpace == null) return;
             objectSpace.Committing += ObjectSpace_Committing;
             objectSpace.ObjectsGetting += ObjectSpace_ObjectsGetting;
