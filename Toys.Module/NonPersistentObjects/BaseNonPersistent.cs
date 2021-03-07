@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Data;
 namespace Toys.Module.BusinessObjects
@@ -11,7 +12,7 @@ namespace Toys.Module.BusinessObjects
         private IObjectSpace objectSpace;
         private string _name;
 
-        protected virtual void RaisePropertyChanged(string propertyName)
+        protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -44,6 +45,12 @@ namespace Toys.Module.BusinessObjects
             map.AcceptObject(clone);
             return clone;
         }
+
+        public virtual void NPOnSaving(IObjectSpace objObjectSpace)
+        {
+            throw new Exception("This should be overriden");
+        }
+
         // IObjectSpaceLink
         [Browsable(false)]
         public IObjectSpace ObjectSpace

@@ -23,6 +23,7 @@ namespace Toys.Module.BusinessObjects
                 objects.Remove(found);
             }
             objects.Add(obj.Clone(this));
+            obj.NPOnSaving(obj.ObjectSpace);
         }
         public void DeleteObject(BaseNonPersistent obj)
         {

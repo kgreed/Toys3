@@ -49,7 +49,8 @@ namespace Toys.Module.BusinessObjects
             set
             {
                 _name = value;
-                OnPropertyChanged();
+                base.RaisePropertyChanged(nameof(Name));
+               // OnPropertyChanged();
             }
         }
 
@@ -59,7 +60,7 @@ namespace Toys.Module.BusinessObjects
             set
             {
                 ToyCategory = (int) value;
-                OnPropertyChanged();
+                base.RaisePropertyChanged(nameof(ToyCategoryNum));
             }  
         }
 
@@ -72,7 +73,8 @@ namespace Toys.Module.BusinessObjects
             set
             {
                 _BrandId = value;
-                OnPropertyChanged();
+                base.RaisePropertyChanged();
+                // OnPropertyChanged();
             }
         }
 
@@ -118,19 +120,20 @@ namespace Toys.Module.BusinessObjects
             get => persistentObjectSpace?.GetObjectByKey<Brand>(BrandId);
             set
             {
-                BrandId = value.Id; 
-                OnPropertyChanged();
+                BrandId = value.Id;
+                //  OnPropertyChanged();
+                base.RaisePropertyChanged();
             }
         }
 
         [Browsable(false)] public IList<Brand> Brands => persistentObjectSpace?.GetObjects<Brand>(CriteriaOperator.Parse("[Id] > 0"));
 
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            if (PropertyChanged == null) return;
-            if (ObjectSpace == null) return;
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
+        //private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        //{
+        //    if (PropertyChanged == null) return;
+        //    if (ObjectSpace == null) return;
+        //    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        //}
 
         [Browsable(false)]
         public string SearchText { get; set; }
@@ -166,17 +169,11 @@ namespace Toys.Module.BusinessObjects
             return clone as BaseNonPersistent;
         }
 
-        //public virtual BaseNonPersistent Clone(IObjectMap map)
-        //{
-        //    var clone = (BaseNonPersistent)Activator.CreateInstance(this.GetType(), this.ID, this.Name);
-        //    map.AcceptObject(clone);
-        //    return clone;
-        //}
-
-        public void NPOnSaving(IObjectSpace osParam)
+         
+        public override void NPOnSaving(IObjectSpace np_os)
         {
-            var os = ((NonPersistentObjectSpace)ObjectSpace).AdditionalObjectSpaces.FirstOrDefault();  // why cant I use this instead of passing in as a parameter?
-            var areSame = osParam.Equals(os); // true
+            var os = ((NonPersistentObjectSpace)np_os).AdditionalObjectSpaces.FirstOrDefault();  // why cant I use this instead of passing in as a parameter?
+            //var areSame = osParam.Equals(os); // true
 
             var brand = os.FindObject<Brand>(CriteriaOperator.Parse("[Id] = ?", BrandId));
             if (brand == null)
@@ -189,6 +186,7 @@ namespace Toys.Module.BusinessObjects
             toy.Brand = brand;
             toy.ToyCategory = ToyCategory;
             os.SetModified(toy);
+            os.CommitChanges();
         }
 
         [NotMapped]
@@ -196,7 +194,7 @@ namespace Toys.Module.BusinessObjects
         public IObjectSpace ObjectSpace { get; set; }
         
 
-        public event PropertyChangedEventHandler PropertyChanged;
+       // public event PropertyChangedEventHandler PropertyChanged;
         public void SetModified()
         {
             ObjectSpace.SetModified(this);
