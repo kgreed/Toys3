@@ -18,6 +18,7 @@ namespace Toys.Module.BusinessObjects
             {
                 showNavigationItemController.CustomShowNavigationItem += ShowNavigationItemController_CustomShowNavigationItem;
             }
+            
         }
         protected override void OnDeactivated()
         {

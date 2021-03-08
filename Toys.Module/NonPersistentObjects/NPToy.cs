@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Configuration;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using DevExpress.Data.Filtering;
@@ -26,10 +27,15 @@ namespace Toys.Module.BusinessObjects
     [NavigationItem("1 Main")]
     public class NPToy :BaseNonPersistent //: INonPersistent, IObjectSpaceLink, INotifyPropertyChanged, IXafEntityObject, IToggleRHS
     {
-        public NPToy(Int32 id, String name) : base(id, name)
+        //public NPToy(Int32 id, String name) : base(id, name)
+        //{
+
+        //}
+        public NPToy(Int32 id) : base(id)
         {
 
         }
+
         public NPToy( )  
         {
 
@@ -128,12 +134,7 @@ namespace Toys.Module.BusinessObjects
 
         [Browsable(false)] public IList<Brand> Brands => persistentObjectSpace?.GetObjects<Brand>(CriteriaOperator.Parse("[Id] > 0"));
 
-        //private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        //{
-        //    if (PropertyChanged == null) return;
-        //    if (ObjectSpace == null) return;
-        //    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        //}
+     
 
         [Browsable(false)]
         public string SearchText { get; set; }
@@ -159,7 +160,7 @@ namespace Toys.Module.BusinessObjects
 
         public override BaseNonPersistent Clone(IObjectMap map)
         {
-            var clone =Activator.CreateInstance(this.GetType(), this.ID, this.Name);
+            var clone =Activator.CreateInstance(this.GetType(), this.ID);
             var tclone = clone as NPToy;
             tclone.Id = Id;
             tclone.BrandId = BrandId;
@@ -173,33 +174,38 @@ namespace Toys.Module.BusinessObjects
         public override void NPOnSaving(IObjectSpace np_os)
         {
             var os = ((NonPersistentObjectSpace)np_os).AdditionalObjectSpaces.FirstOrDefault();  // why cant I use this instead of passing in as a parameter?
-            //var areSame = osParam.Equals(os); // true
-
+         
             var brand = os.FindObject<Brand>(CriteriaOperator.Parse("[Id] = ?", BrandId));
             if (brand == null)
             {
                 throw new Exception($"Category {BrandId} was not found");
             }
 
+            // update persistent data
             var toy = os.FindObject<Toy>(CriteriaOperator.Parse("[Id] = ?", Id));
             toy.Name = Name;
             toy.Brand = brand;
             toy.ToyCategory = ToyCategory;
             os.SetModified(toy);
             os.CommitChanges();
+
+             
+           // var npOS = np_os.FindObject<NPToy>(CriteriaOperator.Parse("[Id] = ?", Id)); this will be correct
+            
+
         }
 
         [NotMapped]
         [Browsable(false)]
         public IObjectSpace ObjectSpace { get; set; }
-        
 
-       // public event PropertyChangedEventHandler PropertyChanged;
+
+
         public void SetModified()
         {
             ObjectSpace.SetModified(this);
         }
-       
+
         public void OnLoaded()
         {
             var os = ((NonPersistentObjectSpace)ObjectSpace).AdditionalObjectSpaces.FirstOrDefault();
