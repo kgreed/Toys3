@@ -40,12 +40,6 @@ namespace Toys.Module.BusinessObjects
         {
 
         }
-        [DevExpress.ExpressApp.Data.Key]
-        [ModelDefault("AllowEdit", "False")]
-        public int Id { get; set; }
-
-        
-        
 
         private string _name;
         [ImmediatePostData]
@@ -158,19 +152,20 @@ namespace Toys.Module.BusinessObjects
             }
         }
 
-        public override BaseNonPersistent Clone(IObjectMap map)
-        {
-            var clone =Activator.CreateInstance(this.GetType(), this.ID);
-            var tclone = clone as NPToy;
-            tclone.Id = Id;
+        public override BaseNonPersistent Clone(IObjectMap map) {
+            var clone = (NPToy)Activator.CreateInstance(this.GetType(), this.ID);
+            CopyTo(clone, map);
+            map.AcceptObject(clone);
+            return clone;
+        }
+        public override void CopyTo(BaseNonPersistent target, IObjectMap map) {
+            var tclone = (NPToy)target;
+            tclone._id = ID;
             tclone.BrandId = BrandId;
             tclone.Name = Name;
             tclone.ToyCategory = ToyCategory;
-            map.AcceptObject(tclone);
-            return clone as BaseNonPersistent;
         }
 
-         
         public override void NPOnSaving(IObjectSpace np_os)
         {
             var os = ((NonPersistentObjectSpace)np_os).AdditionalObjectSpaces.FirstOrDefault();  // why cant I use this instead of passing in as a parameter?
@@ -182,7 +177,7 @@ namespace Toys.Module.BusinessObjects
             }
 
             // update persistent data
-            var toy = os.FindObject<Toy>(CriteriaOperator.Parse("[Id] = ?", Id));
+            var toy = os.FindObject<Toy>(CriteriaOperator.Parse("[Id] = ?", ID));
             toy.Name = Name;
             toy.Brand = brand;
             toy.ToyCategory = ToyCategory;
@@ -194,12 +189,6 @@ namespace Toys.Module.BusinessObjects
             
 
         }
-
-        [NotMapped]
-        [Browsable(false)]
-        public IObjectSpace ObjectSpace { get; set; }
-
-
 
         public void SetModified()
         {
@@ -229,10 +218,10 @@ namespace Toys.Module.BusinessObjects
 
         private T FindOrMakeToyInfo<T>(IObjectSpace os) where T: IToyType
         {
-           var toy = os.FindObject<T>(CriteriaOperator.Parse("[Id]=?", Id));
+           var toy = os.FindObject<T>(CriteriaOperator.Parse("[Id]=?", ID));
             if (toy != null) return toy;
             toy = os.CreateObject<T>();
-            toy.Id = Id;
+            toy.Id = ID;
             return toy;
         }
     }

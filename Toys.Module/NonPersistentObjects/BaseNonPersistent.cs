@@ -8,7 +8,7 @@ namespace Toys.Module.BusinessObjects
     public abstract class BaseNonPersistent : INotifyPropertyChanged, IObjectSpaceLink
     {
         private static int _idCounter = 1;
-        private readonly int _id;
+        protected int _id;
         private IObjectSpace objectSpace;
        
 
@@ -27,15 +27,18 @@ namespace Toys.Module.BusinessObjects
         }
         protected BaseNonPersistent() : this(_idCounter++) { }
         [Key]
-        [Browsable(false)]
+        //[Browsable(false)]
         public int ID => _id;
-         
-        public virtual BaseNonPersistent Clone(IObjectMap map)
-        {
+
+        public virtual BaseNonPersistent Clone(IObjectMap map) {
             throw new Exception("Clone needs to be overriden");
             //var clone = (BaseNonPersistent)Activator.CreateInstance(this.GetType(), this.ID, this.Name);
             //map.AcceptObject(clone);
             //return clone;
+        }
+        public virtual void CopyTo(BaseNonPersistent target, IObjectMap map)
+        {
+            throw new Exception("CopyTo needs to be overriden");
         }
 
         public virtual void NPOnSaving(IObjectSpace objObjectSpace)
