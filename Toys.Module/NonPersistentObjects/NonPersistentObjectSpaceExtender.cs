@@ -46,7 +46,7 @@ namespace Toys.Module.BusinessObjects
             if (!typeof(BaseNonPersistent).IsAssignableFrom(e.ObjectType)) return;
             var objects = new BindingList<BaseNonPersistent>
             {
-                AllowNew = true, AllowEdit = true, AllowRemove = true
+                AllowNew = false, AllowEdit = true, AllowRemove = false
             };
             foreach (var obj in globalObjects.Objects)
             {
