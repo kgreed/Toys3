@@ -29,6 +29,7 @@ namespace Toys.Module.BusinessObjects
         [ForeignKey("Brand_Id")]
         public virtual Brand Brand { get; set; }   
 
+        public string Info { get; set; }
         [Browsable(false)]
         public virtual BabyToy BabyToy { get; set; }
         [Browsable(false)]

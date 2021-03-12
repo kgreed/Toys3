@@ -116,18 +116,14 @@ namespace Toys.Module.BusinessObjects
         }
 
         private void ObjectSpace_ObjectReloading(object sender, ObjectGettingEventArgs e) {
-            var obj = e.SourceObject as BaseNonPersistent;
-            if(obj != null) {
-                e.TargetObject = null;
-                if(!obj.ObjectSpace.IsNewObject(obj)) {
-                    localObjects.Remove(obj.ID);
-                    var storedObj = globalObjects.FindObject(obj.ID);
-                    if(storedObj != null) {
-                        storedObj.CopyTo(obj, this);
-                        e.TargetObject = obj;
-                    }
-                }
-            }
+            if (!(e.SourceObject is BaseNonPersistent obj)) return;
+            e.TargetObject = null;
+            if (obj.ObjectSpace.IsNewObject(obj)) return;
+            localObjects.Remove(obj.ID);
+            var storedObj = globalObjects.FindObject(obj.ID);
+            if (storedObj == null) return;
+            storedObj.CopyTo(obj, this);
+            e.TargetObject = obj;
         }
     }
 }

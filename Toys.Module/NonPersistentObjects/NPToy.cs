@@ -27,19 +27,7 @@ namespace Toys.Module.BusinessObjects
     [NavigationItem("1 Main")]
     public class NPToy :BaseNonPersistent //: INonPersistent, IObjectSpaceLink, INotifyPropertyChanged, IXafEntityObject, IToggleRHS
     {
-        //public NPToy(Int32 id, String name) : base(id, name)
-        //{
-
-        //}
-        public NPToy(Int32 id) : base(id)
-        {
-
-        }
-
-        public NPToy( )  
-        {
-
-        }
+       
 
         private string _name;
         [ImmediatePostData]
@@ -53,6 +41,8 @@ namespace Toys.Module.BusinessObjects
                // OnPropertyChanged();
             }
         }
+
+        public string Info { get; set; }
 
         //[Browsable(false)]
         private int ToyCategory { get; set; }
@@ -138,7 +128,7 @@ namespace Toys.Module.BusinessObjects
             using (var connect = new ToysDbContext(connectionString))
             {
                 var parameters = new List<SqlParameter>();
-                var sql = "select t.Id, t.Name, b.Id as BrandId, t.ToyCategory, b.Name as BrandName from toys t inner join brands b on t.Brand_Id = b.Id";
+                var sql = "select t.Id as ToyId, t.Name, t.Info,b.Id as BrandId, t.ToyCategory, b.Name as BrandName from toys t inner join brands b on t.Brand_Id = b.Id";
             
                 if (SearchText?.Length > 0)
                 {
@@ -152,15 +142,19 @@ namespace Toys.Module.BusinessObjects
             }
         }
 
+        [Browsable(false)]
+        public int ToyId { get; set; }
+        public override int ID => ToyId;
+
         public override BaseNonPersistent Clone(IObjectMap map) {
-            var clone = (NPToy)Activator.CreateInstance(this.GetType(), this.ID);
+            var clone = (NPToy)Activator.CreateInstance(this.GetType());
             CopyTo(clone, map);
             map.AcceptObject(clone);
             return clone;
         }
         public override void CopyTo(BaseNonPersistent target, IObjectMap map) {
             var tclone = (NPToy)target;
-            tclone._id = ID;
+            tclone.ToyId = ToyId;
             tclone.BrandId = BrandId;
             tclone.Name = Name;
             tclone.ToyCategory = ToyCategory;

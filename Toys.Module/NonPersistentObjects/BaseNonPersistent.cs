@@ -6,9 +6,7 @@ using DevExpress.ExpressApp.Data;
 namespace Toys.Module.BusinessObjects
 {
     public abstract class BaseNonPersistent : INotifyPropertyChanged, IObjectSpaceLink
-    {
-        private static int _idCounter = 1;
-        protected int _id;
+    { 
         private IObjectSpace objectSpace;
        
 
@@ -17,18 +15,9 @@ namespace Toys.Module.BusinessObjects
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-       
-        protected BaseNonPersistent(int id )
-            : base()
-        {
-            this._id = id;
-            
-
-        }
-        protected BaseNonPersistent() : this(_idCounter++) { }
         [Key]
-        //[Browsable(false)]
-        public int ID => _id;
+        [Browsable(false)]
+        public virtual Int32 ID => throw new Exception("This needs to be overriden");
 
         public virtual BaseNonPersistent Clone(IObjectMap map) {
             throw new Exception("Clone needs to be overriden");
