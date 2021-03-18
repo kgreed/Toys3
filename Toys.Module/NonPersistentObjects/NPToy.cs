@@ -25,7 +25,7 @@ namespace Toys.Module.BusinessObjects
     [DomainComponent]
     [DefaultClassOptions]
     [NavigationItem("1 Main")]
-    public class NPToy :BaseNonPersistent //: INonPersistent, IObjectSpaceLink, INotifyPropertyChanged, IXafEntityObject, IToggleRHS
+    public class NPToy :BaseNonPersistent  
     {
        
 
@@ -38,7 +38,6 @@ namespace Toys.Module.BusinessObjects
             {
                 _name = value;
                 base.RaisePropertyChanged(nameof(Name));
-               // OnPropertyChanged();
             }
         }
 

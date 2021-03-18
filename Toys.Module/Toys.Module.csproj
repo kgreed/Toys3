@@ -262,6 +262,10 @@
     <Compile Include="BusinessObjects\IObjectMap.cs" />
     <Compile Include="BusinessObjects\IToggleRHS.cs" />
     <Compile Include="BusinessObjects\MyInitializer.cs" />
+    <Compile Include="NonPersistentObjects\NonPersistentDetailView.cs" />
+    <Compile Include="NonPersistentObjects\NonPersistentDetailView.Designer.cs">
+      <DependentUpon>NonPersistentDetailView.cs</DependentUpon>
+    </Compile>
     <Compile Include="NonPersistentObjects\NonPersistentObjectActivatorController.cs">
       <SubType>Component</SubType>
     </Compile>
