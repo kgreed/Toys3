@@ -14,6 +14,7 @@ using DevExpress.ExpressApp.ConditionalAppearance;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Model;
+using DevExpress.ExpressApp.SystemModule;
 using DevExpress.Persistent.Base;
 using DevExpress.XtraScheduler.Outlook.Interop;
 using Toys.Module.DTO;
@@ -25,6 +26,8 @@ namespace Toys.Module.BusinessObjects
     [DomainComponent]
     [DefaultClassOptions]
     [NavigationItem("1 Main")]
+    [ListViewFilter("Toy type 1", "false", "Toy type 1", false, Index = 1)]
+    [ListViewFilter("Toy type 2", "true", "Toy type 2", false, Index = 2)]
     public class NPToy :BaseNonPersistent  
     {
        
@@ -161,6 +164,7 @@ namespace Toys.Module.BusinessObjects
 
         public override void NPOnSaving(IObjectSpace np_os)
         {
+           
             var os = ((NonPersistentObjectSpace)np_os).AdditionalObjectSpaces.FirstOrDefault();  // why cant I use this instead of passing in as a parameter?
          
             var brand = os.FindObject<Brand>(CriteriaOperator.Parse("[Id] = ?", BrandId));

@@ -20,7 +20,7 @@ namespace Toys.Module.NonPersistentObjects
 
         private void Ed_ValueStored(object sender, EventArgs e)
         {
-            View.ObjectSpace.SetModified(View.CurrentObject);
+           View.ObjectSpace.SetModified(View.CurrentObject);
         }
     }
 }
