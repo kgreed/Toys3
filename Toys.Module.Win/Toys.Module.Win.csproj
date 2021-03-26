@@ -366,7 +366,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\NPViewController.cs" />
+    <Compile Include="Controllers\NPOvjextViewController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\NPOvjextViewController.Designer.cs">
+      <DependentUpon>NPOvjextViewController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\ViewControllerToggleRHS.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -404,9 +409,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Controllers\NPViewController.resx">
-      <DependentUpon>NPViewController.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controllers\ViewControllerToggleRHS.resx">
       <DependentUpon>ViewControllerToggleRHS.cs</DependentUpon>
     </EmbeddedResource>
