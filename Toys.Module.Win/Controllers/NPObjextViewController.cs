@@ -19,13 +19,11 @@ using Toys.Module.BusinessObjects;
 namespace Toys.Module.Win.Controllers
 {
     // For more typical usage scenarios, be sure to check out https://documentation.devexpress.com/eXpressAppFramework/clsDevExpressExpressAppViewControllertopic.aspx.
-    public partial class NPOvjextViewController : ObjectViewController<ListView,BaseNonPersistent>
+    public partial class NPObjextViewController : ObjectViewController<ListView,BaseNonPersistent>
     {
-        public NPOvjextViewController()
+        public NPObjextViewController()
         {
-            InitializeComponent();
-        
-            // Target required Views (via the TargetXXX properties) and create their Actions.
+            
         }
         private void os_ObjectsGetting(object sender, ObjectsGettingEventArgs e)
         {
