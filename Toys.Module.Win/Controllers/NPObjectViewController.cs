@@ -19,9 +19,9 @@ using Toys.Module.BusinessObjects;
 namespace Toys.Module.Win.Controllers
 {
     // For more typical usage scenarios, be sure to check out https://documentation.devexpress.com/eXpressAppFramework/clsDevExpressExpressAppViewControllertopic.aspx.
-    public partial class NPObjextViewController : ObjectViewController<ListView,BaseNonPersistent>
+    public partial class NPObjectViewController : ObjectViewController<ListView,BaseNonPersistent>
     {
-        public NPObjextViewController()
+        public NPObjectViewController()
         {
             
         }

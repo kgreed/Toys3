@@ -366,7 +366,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\NPObjextViewController.cs" />
+    <Compile Include="Controllers\NPObjectViewController.cs" />
     <Compile Include="Controllers\ViewControllerToggleRHS.cs">
       <SubType>Component</SubType>
     </Compile>

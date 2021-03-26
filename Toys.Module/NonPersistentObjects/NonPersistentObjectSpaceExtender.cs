@@ -43,10 +43,33 @@ namespace Toys.Module.BusinessObjects
         }
         private void ObjectSpace_ObjectsGetting(Object sender, ObjectsGettingEventArgs e)
         {
+            var collection = new DynamicCollection((IObjectSpace)sender, e.ObjectType, e.Criteria, e.Sorting, e.InTransaction);
+            collection.FetchObjects += DynamicCollection_FetchObjects;
+            e.Objects = collection;
+
+            //if (!typeof(BaseNonPersistent).IsAssignableFrom(e.ObjectType)) return;
+            //var objects = new BindingList<BaseNonPersistent>
+            //{
+            //    AllowNew = false, AllowEdit = true, AllowRemove = false
+            //};
+            //foreach (var obj in globalObjects.Objects)
+            //{
+            //    if (e.ObjectType.IsInstanceOfType(obj))
+            //    {
+            //        objects.Add(GetObject(obj));
+            //    }
+            //}
+            //e.Objects = objects;
+        }
+        private void DynamicCollection_FetchObjects(object sender, FetchObjectsEventArgs e)
+        {
+             
             if (!typeof(BaseNonPersistent).IsAssignableFrom(e.ObjectType)) return;
             var objects = new BindingList<BaseNonPersistent>
             {
-                AllowNew = false, AllowEdit = true, AllowRemove = false
+                AllowNew = false,
+                AllowEdit = true,
+                AllowRemove = false
             };
             foreach (var obj in globalObjects.Objects)
             {
@@ -56,6 +79,8 @@ namespace Toys.Module.BusinessObjects
                 }
             }
             e.Objects = objects;
+            e.ShapeData = true;
+
         }
         private void ObjectSpace_ObjectByKeyGetting(Object sender, ObjectByKeyGettingEventArgs e)
         {
