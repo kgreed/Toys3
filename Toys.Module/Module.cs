@@ -64,25 +64,14 @@ namespace Toys.Module {
         private void CreateGlobalNonPersistentObjects()
         {
             globalNonPersistentObjects = new GlobalObjectStorage();
-            var npToy = new NPToy();
-            var objects = npToy.GetData();
-            foreach (NPToy obj in objects)
-            {
-                globalNonPersistentObjects.Add(obj);
-            }
+            //var npToy = new NPToy();
+            //var objects = npToy.GetData();
+            //foreach (NPToy obj in objects)
+            //{
+            //    globalNonPersistentObjects.Add(obj);
+            //}
 
-            //SimpleNonPersistentClass simpleNonPersistentClass = new SimpleNonPersistentClass(0, "Simple Non-Persistent Object");
-            //NonPersistentClassWithNonPersistentCollection nonPersistentClassWithNonPersistentCollection = new NonPersistentClassWithNonPersistentCollection(1, "Non-Persistent Object with a Non-Persistent Collection");
-            //NonPersistentClassWithPersistentProperty nonPersistentClassWithPersistentProperty = new NonPersistentClassWithPersistentProperty(2, "First Non-Persistent Object with a Persistent Property");
-            //NonPersistentClassWithPersistentProperty nonPersistentClassWithPersistentProperty1 = new NonPersistentClassWithPersistentProperty(3, "Second Non-Persistent Object with a Persistent Property");
-
-            //globalNonPersistentObjects.Add(simpleNonPersistentClass);
-            //globalNonPersistentObjects.Add(nonPersistentClassWithNonPersistentCollection);
-            //globalNonPersistentObjects.Add(nonPersistentClassWithPersistentProperty);
-            //globalNonPersistentObjects.Add(nonPersistentClassWithPersistentProperty1);
-
-            //nonPersistentClassWithNonPersistentCollection.AddNonPersistentClassWithPersistentProperty(nonPersistentClassWithPersistentProperty);
-            //nonPersistentClassWithNonPersistentCollection.AddNonPersistentClassWithPersistentProperty(nonPersistentClassWithPersistentProperty1);
+          
         }
     }
 }

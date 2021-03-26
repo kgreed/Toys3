@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DevExpress.ExpressApp;
@@ -18,7 +19,7 @@ namespace Toys.Module.BusinessObjects
         [Key]
         [Browsable(false)]
         public virtual Int32 ID => throw new Exception("This needs to be overriden");
-
+        public abstract List<BaseNonPersistent> NPGetData(ViewTag tag);
         public virtual BaseNonPersistent Clone(IObjectMap map) {
             throw new Exception("Clone needs to be overriden");
             //var clone = (BaseNonPersistent)Activator.CreateInstance(this.GetType(), this.ID, this.Name);

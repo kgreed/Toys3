@@ -124,8 +124,9 @@ namespace Toys.Module.BusinessObjects
 
         [Browsable(false)]
         public string SearchText { get; set; }
-        public List<NPToy> GetData()
+        public List<NPToy> GetData(ViewTag tag)
         {
+            // todo make use of tag to set filter
             var connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             using (var connect = new ToysDbContext(connectionString))
             {
@@ -147,6 +148,12 @@ namespace Toys.Module.BusinessObjects
         [Browsable(false)]
         public int ToyId { get; set; }
         public override int ID => ToyId;
+        public override List<BaseNonPersistent> NPGetData(ViewTag tag)
+        {
+            var objs = GetData(tag);
+            var r = objs.Cast<BaseNonPersistent>().ToList();
+            return r;
+        }
 
         public override BaseNonPersistent Clone(IObjectMap map) {
             var clone = (NPToy)Activator.CreateInstance(this.GetType());

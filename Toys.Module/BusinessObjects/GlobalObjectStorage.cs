@@ -4,7 +4,7 @@ namespace Toys.Module.BusinessObjects
 {
     public class GlobalObjectStorage : IObjectMap
     {
-        private readonly List<BaseNonPersistent> objects = new List<BaseNonPersistent>();
+        private  List<BaseNonPersistent> objects = new List<BaseNonPersistent>();
         public IEnumerable<BaseNonPersistent> Objects => objects.AsReadOnly();
 
         public void Add(BaseNonPersistent obj)
@@ -44,6 +44,11 @@ namespace Toys.Module.BusinessObjects
         }
         void IObjectMap.AcceptObject(object obj)
         {
+        }
+
+        public void ObjectsInit(List<BaseNonPersistent> Objs)
+        {
+            objects = Objs;
         }
     }
 }

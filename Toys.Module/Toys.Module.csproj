@@ -255,6 +255,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ViewTag.cs" />
     <Compile Include="NonPersistentObjects\BaseNonPersistent.cs" />
     <Compile Include="BusinessObjects\Brand.cs" />
     <Compile Include="BusinessObjects\BabyToy.cs" />

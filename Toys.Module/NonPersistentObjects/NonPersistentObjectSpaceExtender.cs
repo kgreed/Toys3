@@ -53,12 +53,26 @@ namespace Toys.Module.BusinessObjects
         {
              
             if (!typeof(BaseNonPersistent).IsAssignableFrom(e.ObjectType)) return;
+            var tempBo = Activator.CreateInstance(e.ObjectType);
+
+            var dc = (DynamicCollection)sender;
+            var os = dc.ObjectSpace;
+            var npos = (NonPersistentObjectSpace)os;
+
+            var lv = (ListView)npos.Owner;
+            var viewTag = lv.Tag as ViewTag;
+
+            var data = ((BaseNonPersistent)tempBo).NPGetData(viewTag);
+            globalObjects.ObjectsInit(data);
+
+
             var objects = new BindingList<BaseNonPersistent>
             {
                 AllowNew = false,
                 AllowEdit = true,
                 AllowRemove = false
             };
+        
             foreach (var obj in globalObjects.Objects)
             {
                 if (e.ObjectType.IsInstanceOfType(obj))

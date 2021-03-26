@@ -1,6 +1,5 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
-using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Layout;
 using DevExpress.ExpressApp.Model.NodeGenerators;
@@ -13,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DevExpress.ExpressApp.Win.Editors;
 using Toys.Module.BusinessObjects;
 
 
@@ -21,40 +21,37 @@ namespace Toys.Module.Win.Controllers
     // For more typical usage scenarios, be sure to check out https://documentation.devexpress.com/eXpressAppFramework/clsDevExpressExpressAppViewControllertopic.aspx.
     public partial class NPObjectViewController : ObjectViewController<ListView,BaseNonPersistent>
     {
-        public NPObjectViewController()
-        {
-            
-        }
-        private void os_ObjectsGetting(object sender, ObjectsGettingEventArgs e)
-        {
-            var collection = new DynamicCollection((IObjectSpace)sender, e.ObjectType, e.Criteria, e.Sorting, e.InTransaction);
-            collection.FetchObjects += DynamicCollection_FetchObjects;
-            e.Objects = collection;
-        }
-        private void DynamicCollection_FetchObjects(object sender, FetchObjectsEventArgs e)
-        {
-            // what goes here to use NonPersistentObjectSpaceExtender to call e.Objects = NPCat.GetNPCats().ToList();
-            e.ShapeData = true;
-
-        }
         protected override void OnActivated()
         {
             base.OnActivated();
-            var os = (NonPersistentObjectSpace)ObjectSpace;
-            os.ObjectsGetting += os_ObjectsGetting;
-            // Perform various tasks depending on the target View.
+            var filterController = Frame.GetController<FilterController>();
+            filterController.SetFilterAction.SelectedItemChanged += SetFilterAction_SelectedItemChanged;
+            View.ControlsCreated += View_ControlsCreated;
         }
-        protected override void OnViewControlsCreated()
+
+        private void SetFilterAction_SelectedItemChanged(object sender, EventArgs e)
         {
-            base.OnViewControlsCreated();
-            // Access and customize the target View control.
+            var filterController = Frame.GetController<FilterController>();
+            View.Tag = new ViewTag
+            {
+                FilterChoice = filterController.SetFilterAction.SelectedItem,
+                SearchString = ""
+            }; // not sure how to get the search string
         }
+
+        private void View_ControlsCreated(object sender, EventArgs e)
+        {
+            var listView = View;
+            if (!(listView?.Editor is GridListEditor editor)) return;
+            editor.GridView.OptionsFind.AlwaysVisible = true;
+        }
+
         protected override void OnDeactivated()
         {
-            // Unsubscribe from previously subscribed events and release other references and resources.
+            var filterController = Frame.GetController<FilterController>();
+            filterController.SetFilterAction.SelectedItemChanged -= SetFilterAction_SelectedItemChanged;
             base.OnDeactivated();
-            var os = (NonPersistentObjectSpace)ObjectSpace;
-            os.ObjectsGetting += os_ObjectsGetting;
+            View.ControlsCreated -= View_ControlsCreated;
         }
     }
 }
