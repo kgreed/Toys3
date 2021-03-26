@@ -47,19 +47,7 @@ namespace Toys.Module.BusinessObjects
             collection.FetchObjects += DynamicCollection_FetchObjects;
             e.Objects = collection;
 
-            //if (!typeof(BaseNonPersistent).IsAssignableFrom(e.ObjectType)) return;
-            //var objects = new BindingList<BaseNonPersistent>
-            //{
-            //    AllowNew = false, AllowEdit = true, AllowRemove = false
-            //};
-            //foreach (var obj in globalObjects.Objects)
-            //{
-            //    if (e.ObjectType.IsInstanceOfType(obj))
-            //    {
-            //        objects.Add(GetObject(obj));
-            //    }
-            //}
-            //e.Objects = objects;
+            
         }
         private void DynamicCollection_FetchObjects(object sender, FetchObjectsEventArgs e)
         {
