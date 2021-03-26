@@ -35,9 +35,7 @@ namespace Toys.Module.Win.Controllers
         }
         private void DynamicCollection_FetchObjects(object sender, FetchObjectsEventArgs e)
         {
-
-          //  NonPersistentObjectSpaceExtender
-            //e.Objects = NPCat.GetNPCats().ToList();
+            // what goes here to use NonPersistentObjectSpaceExtender to call e.Objects = NPCat.GetNPCats().ToList();
             e.ShapeData = true;
 
         }
