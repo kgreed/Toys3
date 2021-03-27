@@ -10,6 +10,7 @@ using DevExpress.Persistent.Base;
 using DevExpress.Persistent.Validation;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using DevExpress.ExpressApp.Win.Editors;
@@ -26,7 +27,19 @@ namespace Toys.Module.Win.Controllers
             base.OnActivated();
             var filterController = Frame.GetController<FilterController>();
             filterController.SetFilterAction.SelectedItemChanged += SetFilterAction_SelectedItemChanged;
+
+            // doesnt work
+            if (filterController != null)
+            {
+                
+                filterController.FullTextFilterAction.ValueChanged += FullTextFilterAction_ValueChanged;
+            }
             View.ControlsCreated += View_ControlsCreated;
+        }
+
+        private void FullTextFilterAction_ValueChanged(object sender, EventArgs e)
+        {
+            Debug.Print("hi");
         }
 
         private void SetFilterAction_SelectedItemChanged(object sender, EventArgs e)
@@ -50,8 +63,15 @@ namespace Toys.Module.Win.Controllers
         {
             var filterController = Frame.GetController<FilterController>();
             filterController.SetFilterAction.SelectedItemChanged -= SetFilterAction_SelectedItemChanged;
+            if (filterController != null)
+            {
+                
+                filterController.FullTextFilterAction.ValueChanged += FullTextFilterAction_ValueChanged;
+            }
             base.OnDeactivated();
             View.ControlsCreated -= View_ControlsCreated;
         }
+
+         
     }
 }
