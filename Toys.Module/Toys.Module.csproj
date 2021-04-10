@@ -261,8 +261,8 @@
     <Compile Include="BusinessObjects\IToggleRHS.cs" />
     <Compile Include="BusinessObjects\IToyType.cs" />
     <Compile Include="BusinessObjects\MyInitializer.cs" />
-    <Compile Include="BusinessObjects\NonPersistentObjectBase.cs" />
-    <Compile Include="BusinessObjects\NPToy.cs" />
+    <Compile Include="AuxiliaryObjects\NonPersistentObjectBase.cs" />
+    <Compile Include="NPToy.cs" />
     <Compile Include="BusinessObjects\PreSchoolToy.cs" />
     <Compile Include="BusinessObjects\ToddlerToy.cs" />
     <Compile Include="BusinessObjects\Toy.cs" />
@@ -277,9 +277,9 @@
     <Compile Include="DTO\ToddlerToyDto.cs" />
     <Compile Include="GenHelper.cs" />
     <Compile Include="GlobalServiceProvider.cs" />
-    <Compile Include="NonPersistentObjectFactoryBase.cs" />
-    <Compile Include="NPClient.cs" />
-    <Compile Include="NPFactory.cs" />
+    <Compile Include="AuxiliaryObjects\NonPersistentObjectFactoryBase.cs" />
+    <Compile Include="AuxiliaryObjects\NPClient.cs" />
+    <Compile Include="AuxiliaryObjects\NPFactory.cs" />
     <Compile Include="ObjectMap.cs" />
     <Compile Include="SimpleDataStoreCriteriaVisitor.cs" />
     <Compile Include="ToysModule.cs">
@@ -315,6 +315,7 @@
   <ItemGroup>
     <None Include="Welcome.html" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
