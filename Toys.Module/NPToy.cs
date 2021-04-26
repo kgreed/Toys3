@@ -3,62 +3,23 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Configuration;
-using System.Data.Common;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.ConditionalAppearance;
+using DevExpress.ExpressApp.Data;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Editors;
-using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
-using DevExpress.XtraScheduler.Outlook.Interop;
-using Toys.Module.DTO;
-using Toys.Module.Win.Controllers;
-using Exception = System.Exception;
-
-
 namespace Toys.Module.BusinessObjects
 {
     [DomainComponent]
     [DefaultClassOptions]
     [NavigationItem("1 Main")]
-    public class NPToy :  NonPersistentObjectBase //INonPersistent, IObjectSpaceLink, INotifyPropertyChanged, IXafEntityObject, IToggleRHS
+    public class
+        NPToy : NonPersistentObjectBase //INonPersistent, IObjectSpaceLink, INotifyPropertyChanged, IXafEntityObject, IToggleRHS
     {
-        public NPToy() {
-            
-        }
-
-        //[DevExpress.ExpressApp.Data.Key]
-        //[ModelDefault("AllowEdit", "False")]
-        //public int Id { get; set; }
-
-        [Browsable(false)]
-        public int CacheIndex { get; set; }
-
-        private string _name;
-        //[ImmediatePostData]
-        public string ToyName
-        {
-            get => _name;
-            set => SetPropertyValue(nameof(ToyName), ref _name, value);
-        }
-
-        //[Browsable(false)]
-        private int _toyCategory;
-        public ToyCategoryEnum ToyCategoryNum { 
-              get =>(ToyCategoryEnum) _toyCategory;
-              set => SetPropertyValue<int>(nameof(ToyCategoryNum), ref _toyCategory, (int) value  );  
-        }
-        public int ToyCategory
-        {
-            get => (int)_toyCategory;
-            set => SetPropertyValue(nameof(ToyCategory), ref _toyCategory, value);
-        }
-
         //private int _BrandId;
         //[Browsable(false)]
         //[ModelDefault("AllowEdit", "False")]
@@ -70,8 +31,34 @@ namespace Toys.Module.BusinessObjects
         //        OnPropertyChanged();
         //    }
         //}
-
         private BabyToy _babyToy;
+        private string _name;
+        private PreSchoolToy _preSchoolToy;
+        private ToddlerToy _toddlerToy;
+
+        //[Browsable(false)]
+        private int _toyCategory;
+
+        //[DevExpress.ExpressApp.Data.Key]
+        //[ModelDefault("AllowEdit", "False")]
+        //public int Id { get; set; }
+        [Browsable(false)] public int CacheIndex { get; set; }
+        //[ImmediatePostData]
+        public string ToyName
+        {
+            get => _name;
+            set => SetPropertyValue(nameof(ToyName), ref _name, value);
+        }
+        public ToyCategoryEnum ToyCategoryNum
+        {
+            get => (ToyCategoryEnum) _toyCategory;
+            set => SetPropertyValue(nameof(ToyCategoryNum), ref _toyCategory, (int) value);
+        }
+        public int ToyCategory
+        {
+            get => _toyCategory;
+            set => SetPropertyValue(nameof(ToyCategory), ref _toyCategory, value);
+        }
         [Appearance("IsBabyToy", Visibility = ViewItemVisibility.Hide, Criteria = "[ToyCategoryNum] != 1")]
         [VisibleInListView(false)]
         [NotMapped]
@@ -80,9 +67,6 @@ namespace Toys.Module.BusinessObjects
             get => ToyCategoryNum != ToyCategoryEnum.Baby ? null : _babyToy;
             set => _babyToy = value;
         }
-
-        private PreSchoolToy _preSchoolToy;
-
         [Appearance("IsPreSchoolToy", Visibility = ViewItemVisibility.Hide, Criteria = "[ToyCategoryNum] != 3")]
         [VisibleInListView(false)]
         [NotMapped]
@@ -91,8 +75,6 @@ namespace Toys.Module.BusinessObjects
             get => ToyCategoryNum != ToyCategoryEnum.PreSchool ? null : _preSchoolToy;
             set => _preSchoolToy = value;
         }
-
-        private ToddlerToy _toddlerToy;
         [Appearance("IsToddlerToy", Visibility = ViewItemVisibility.Hide, Criteria = "[ToyCategoryNum] != 2")]
         [VisibleInListView(false)]
         [NotMapped]
@@ -104,7 +86,7 @@ namespace Toys.Module.BusinessObjects
 
         //[NotMapped]
 
-       // IObjectSpace persistentObjectSpace => ((NonPersistentObjectSpace)ObjectSpace)?.AdditionalObjectSpaces?.FirstOrDefault();
+        // IObjectSpace persistentObjectSpace => ((NonPersistentObjectSpace)ObjectSpace)?.AdditionalObjectSpaces?.FirstOrDefault();
 
         //[DataSourceProperty("Brands")]
         //[NotMapped]
@@ -127,10 +109,8 @@ namespace Toys.Module.BusinessObjects
         //    if (ObjectSpace == null) return;
         //    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         //}
-
-        [Browsable(false)]
-        public string SearchText { get; set; }
-      
+        [Browsable(false)] public string SearchText { get; set; }
+        [Browsable(false)] [Key] public int Id { get; set; }
 
         public List<NonPersistentObjectBase> GetData(IObjectSpace os)
         {
@@ -138,15 +118,16 @@ namespace Toys.Module.BusinessObjects
             using (var connect = new ToysDbContext(connectionString))
             {
                 var parameters = new List<SqlParameter>();
-                var sql = "select t.Id, t.Name as ToyName, b.Id as BrandId, t.ToyCategory, b.Name as BrandName from toys t inner join brands b on t.Brand_Id = b.Id";
-            
+                var sql =
+                    "select t.Id, t.Name as ToyName, b.Id as BrandId, t.ToyCategory, b.Name as BrandName from toys t inner join brands b on t.Brand_Id = b.Id";
                 if (SearchText?.Length > 0)
                 {
                     sql += " where t.name like @name";
-                    parameters.Add( new SqlParameter("@name",$"%{SearchText}%"));
+                    parameters.Add(new SqlParameter("@name", $"%{SearchText}%"));
                 }
-                var results = connect.Database.SqlQuery<NPToy>(sql,parameters.ToArray()).ToList();
-                var npresults = results.ConvertAll(x => (NonPersistentObjectBase)x);
+
+                var results = connect.Database.SqlQuery<NPToy>(sql, parameters.ToArray()).ToList();
+                var npresults = results.ConvertAll(x => (NonPersistentObjectBase) x);
                 //var index = 0;
                 //foreach (NonPersistentObjectBase np in npresults)
                 //{
@@ -158,9 +139,8 @@ namespace Toys.Module.BusinessObjects
             }
         }
 
-        public void NPOnSaving(IObjectSpace os )
+        public void NPOnSaving(IObjectSpace os)
         {
-
             //var brand = os.FindObject<Brand>(CriteriaOperator.Parse("[Id] = ?", BrandId));
             //if (brand == null)
             //{
@@ -170,19 +150,19 @@ namespace Toys.Module.BusinessObjects
             var toy = os.FindObject<Toy>(CriteriaOperator.Parse("[Id] = ?", Id));
             toy.Name = ToyName;
             toy.ToyCategory = _toyCategory;
-            os.SetModified(toy);  // remember to call os.CommitChanges()
+            os.SetModified(toy); // remember to call os.CommitChanges()
         }
 
         //[NotMapped]
         //[Browsable(false)]
         //public IObjectSpace ObjectSpace { get; set; }
-        
-
         public event PropertyChangedEventHandler PropertyChanged;
+
         public void SetModified()
         {
             ObjectSpace.SetModified(this);
         }
+
         public void OnCreated()
         {
             //throw new NotImplementedException();
@@ -196,12 +176,11 @@ namespace Toys.Module.BusinessObjects
 
         public void OnLoaded()
         {
-            var os = ((NonPersistentObjectSpace)ObjectSpace).AdditionalObjectSpaces.FirstOrDefault();
-
+            var os = ((NonPersistentObjectSpace) ObjectSpace).AdditionalObjectSpaces.FirstOrDefault();
             switch (ToyCategoryNum)
             {
                 case ToyCategoryEnum.Baby:
-                    BabyToy =FindOrMakeToyInfo<BabyToy>(os);
+                    BabyToy = FindOrMakeToyInfo<BabyToy>(os);
                     break;
                 case ToyCategoryEnum.Toddler:
                     ToddlerToy = FindOrMakeToyInfo<ToddlerToy>(os);
@@ -212,29 +191,20 @@ namespace Toys.Module.BusinessObjects
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
         }
 
-        private T FindOrMakeToyInfo<T>(IObjectSpace os) where T: IToyType
+        private T FindOrMakeToyInfo<T>(IObjectSpace os) where T : IToyType
         {
-           var toy = os.FindObject<T>(CriteriaOperator.Parse("[Id]=?", Id));
+            var toy = os.FindObject<T>(CriteriaOperator.Parse("[Id]=?", Id));
             if (toy != null) return toy;
             toy = os.CreateObject<T>();
             toy.Id = Id;
             return toy;
         }
 
-        private int id;
-        [Browsable(false)]
-        [DevExpress.ExpressApp.Data.Key]
-        public int Id
-        {
-            get { return id; }
-            set { id = value; }
-        }
         public void SetKey(int id)
         {
-            this.id = id;
+            Id = id;
         }
     }
 }

@@ -10,15 +10,13 @@ namespace Toys.Module.BusinessObjects
         protected IObjectSpace ObjectSpace { get { return objectSpace; } }
         IObjectSpace IObjectSpaceLink.ObjectSpace
         {
-            get { return objectSpace; }
+            get => objectSpace;
             set
             {
-                if (objectSpace != value)
-                {
-                    OnObjectSpaceChanging();
-                    objectSpace = value;
-                    OnObjectSpaceChanged();
-                }
+                if (objectSpace == value) return;
+                OnObjectSpaceChanging();
+                objectSpace = value;
+                OnObjectSpaceChanged();
             }
         }
         protected virtual void OnObjectSpaceChanging() { }
@@ -34,13 +32,11 @@ namespace Toys.Module.BusinessObjects
         }
         protected void SetPropertyValue<T>(string name, ref T field, T value)
         {
-            if (!Equals(field, value))
-            {
-                field = value;
-                OnPropertyChanged(name);
-            }
+            if (Equals(field, value)) return;
+            field = value;
+            OnPropertyChanged(name);
         }
         [Browsable(false)]
-        public object This { get { return this; } }
+        public object This => this;
     }
 }
