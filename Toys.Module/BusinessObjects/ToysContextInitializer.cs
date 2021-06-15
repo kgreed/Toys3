@@ -2,7 +2,6 @@
 using System.Data.Entity.Infrastructure;
 using DevExpress.ExpressApp.Design;
 using DevExpress.ExpressApp.EF.DesignTime;
-
 namespace Toys.Module.BusinessObjects
 {
     public class ToysContextInitializer : DbContextTypesInfoInitializerBase {
