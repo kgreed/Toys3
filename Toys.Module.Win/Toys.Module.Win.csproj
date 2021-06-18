@@ -365,6 +365,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AutoRefreshListViewController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controllers\AutoRefreshListViewController.Designer.cs">
+      <DependentUpon>AutoRefreshListViewController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\NPObjectViewController.cs" />
     <Compile Include="Controllers\ViewControllerToggleRHS.cs">
       <SubType>Component</SubType>
